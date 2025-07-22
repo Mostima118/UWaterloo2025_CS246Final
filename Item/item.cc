@@ -18,5 +18,6 @@ public:
     int getCol() const;
     ItemType getType() const;
 
+    // Gets the symbol of the item, a number from 0 - 9
     virtual char getSymbol() const = 0;
 };
