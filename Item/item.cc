@@ -1,23 +1,27 @@
+/////////////////////////////////NEED RANDOM GENERATION///////////////////////////////////
+// How to ensure some potions have permanent effect but others dont
 export module item;
 
-export enum class ItemType {
-    Potion,
-    Treasure
-};
+import <memory>;
 
 export class Item {
 protected:
-    int row, col;
-    ItemType type;
+    int row;
+    int col;
 
 public:
-    Item(int row, int col, ItemType type);
+    Item(int r, int c);
     virtual ~Item() = default;
 
     int getRow() const;
     int getCol() const;
-    ItemType getType() const;
+    void setPosition(int r, int c);
 
-    // Gets the symbol of the item, a number from 0 - 9
+    virtual void use() = 0;
     virtual char getSymbol() const = 0;
+
+    virtual bool isPotion() const;
+
+    static std::unique_ptr<Item> createRandomPotion();
+    static std::unique_ptr<Item> createRandomTreasure();
 };

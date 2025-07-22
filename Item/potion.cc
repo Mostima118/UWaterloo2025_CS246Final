@@ -1,32 +1,82 @@
 export module potion;
+
 import item;
 
-export enum class PotionType {
-    RH, // Restore Health
+enum class PotionType {
+    RH, // Restore HP
     BA, // Boost Atk
     BD, // Boost Def
-    PH, // Poison Health
+    PH, // Poison HP
     WA, // Wound Atk
     WD  // Wound Def
 };
 
 export class Potion : public Item {
+protected:
     PotionType potionType;
-
-    // If identified, potion effect is known
+    // Default to be false, if used once, will be changed to true
     bool identified;
 
 public:
-    // The potion will first be constructed as unknown to the player
-    Potion(int row, int col, PotionType type);
+    Potion(int r, int c, PotionType type);
+    virtual ~Potion() = default;
 
     PotionType getPotionType() const;
     bool isIdentified() const;
-    
-    // Modify the identified field to true
+
+    // Change identified to true
     void identify();
 
-    char getSymbol() const override;
+    bool isPotion() const override;
 
-    ~Potion() = default;
+    char getSymbol() const override = 0;
+    void use() override = 0;
+};
+
+export class RestoreHealthPotion : public Potion {
+public:
+    RestoreHealthPotion(int r, int c);
+    void applyTo(class Player& player);
+    char getSymbol() const override;
+    void use() override;
+};
+
+export class BoostAtkPotion : public Potion {
+public:
+    BoostAtkPotion(int r, int c);
+    void applyTo(class Player& player);
+    char getSymbol() const override;
+    void use() override;
+};
+
+export class BoostDefPotion : public Potion {
+public:
+    BoostDefPotion(int r, int c);
+    void applyTo(class Player& player);
+    char getSymbol() const override;
+    void use() override;
+};
+
+export class PoisonHealthPotion : public Potion {
+public:
+    PoisonHealthPotion(int r, int c);
+    void applyTo(class Player& player);
+    char getSymbol() const override;
+    void use() override;
+};
+
+export class WoundAtkPotion : public Potion {
+public:
+    WoundAtkPotion(int r, int c);
+    void applyTo(class Player& player);
+    char getSymbol() const override;
+    void use() override;
+};
+
+export class WoundDefPotion : public Potion {
+public:
+    WoundDefPotion(int r, int c);
+    void applyTo(class Player& player);
+    char getSymbol() const override;
+    void use() override;
 };

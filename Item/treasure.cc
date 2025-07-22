@@ -1,26 +1,52 @@
 export module treasure;
-import item;
 
-export enum class TreasureType {
-    Normal,
-    Small,
-    MerchantHoard,
-    DragonHoard
-};
+import item;
 
 export class Treasure : public Item {
 protected:
-    TreasureType treasureType;
     int value;
 
 public:
-    Treasure(int row, int col, TreasureType type);
+    Treasure(int r, int c, int val);
+    virtual ~Treasure() = default;
 
-    TreasureType getTreasureType() const;
     int getValue() const;
+
     char getSymbol() const override;
 
+    // This is for DragonHoard; the gold is presented 
+    //  but cannot be picked up if dragon is not slain
     virtual bool isCollectible() const;
-    
-    virtual ~Treasure() = default;
+
+    void use() override;
+};
+
+export class NormalGold : public Treasure {
+public:
+    NormalGold(int r, int c);
+    int getValue() const override;
+    char getSymbol() const override;
+};
+
+export class SmallGold : public Treasure {
+public:
+    SmallGold(int r, int c);
+    int getValue() const override;
+    char getSymbol() const override;
+};
+
+export class MerchantHoard : public Treasure {
+public:
+    MerchantHoard(int r, int c);
+    int getValue() const override;
+    char getSymbol() const override;
+};
+
+export class DragonHoard : public Treasure {
+    bool dragonAlive;
+public:
+    DragonHoard(int r, int c, bool alive = true);
+    int getValue() const override;
+    char getSymbol() const override;
+    bool isCollectible() const override;
 };

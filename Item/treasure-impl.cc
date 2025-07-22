@@ -1,35 +1,39 @@
 module treasure;
 
-Treasure::Treasure(int row, int col, TreasureType type)
-    : Item{row, col}, treasureType{type} {
-    switch (type) {
-        case TreasureType::Small:
-            value = 1;
-            break;
-        case TreasureType::Normal:
-            value = 2;
-            break;
-        case TreasureType::MerchantHoard:
-            value = 4;
-            break;
-        case TreasureType::DragonHoard:
-            value = 6;
-            break;
-    }
+Treasure::Treasure(int r, int c, int val) : Item(r, c), value{val} {}
+
+int Treasure::getValue() const { return value; }
+
+char Treasure::getSymbol() const { return 'G'; }
+
+bool Treasure::isCollectible() const { return true; }
+
+void Treasure::use() {
+    // Treasure picked up logic
+    // Example, incrementing in-game gold count:
+    //  player->addGold(value);
 }
 
-TreasureType Treasure::getTreasureType() const {
-    return treasureType;
-}
+// NormalGold
+NormalGold::NormalGold(int r, int c) : Treasure(r, c, 2) {}
+int NormalGold::getValue() const { return 2; }
+char NormalGold::getSymbol() const { return '6'; }
 
-int Treasure::getValue() const {
-    return value;
-}
+// SmallGold
+SmallGold::SmallGold(int r, int c) : Treasure(r, c, 1) {}
+int SmallGold::getValue() const { return 1; }
+char SmallGold::getSymbol() const { return '7'; }
 
-bool Treasure::isCollectible() const {
-    return true; // default behavior for all non-DragonHoard
-}
+// MerchantHoard
+MerchantHoard::MerchantHoard(int r, int c) : Treasure(r, c, 4) {}
+int MerchantHoard::getValue() const { return 4; }
+char MerchantHoard::getSymbol() const { return '8'; }
 
-char Treasure::getSymbol() const {
-    return 'G';
+// DragonHoard
+DragonHoard::DragonHoard(int r, int c, bool alive) : Treasure(r, c, 6), dragonAlive{alive} {}
+int DragonHoard::getValue() const { return 6; }
+char DragonHoard::getSymbol() const { return '9'; }
+
+bool DragonHoard::isCollectible() const {
+    return !dragonAlive;
 }
