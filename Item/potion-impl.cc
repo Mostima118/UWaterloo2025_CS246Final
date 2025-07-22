@@ -18,6 +18,8 @@ void RestoreHealthPotion::use(class Player& player) { /* implement will be based
 /* void RestoreHealthPotion::use(Player& player) {
     player.modifyHP(+10);
 }*/
+// modifyHP should be implemented to have permanent effect in the player class
+// Other effects related to atk and def should only be effective for one floor
 
 // BoostAtkPotion
 BoostAtkPotion::BoostAtkPotion(int r, int c) : Potion(r, c, PotionType::BA) {}
