@@ -1,5 +1,3 @@
-/////////////////////////////////NEED RANDOM GENERATION///////////////////////////////////
-// How to ensure some potions have permanent effect but others dont
 export module item;
 
 import <memory>;
