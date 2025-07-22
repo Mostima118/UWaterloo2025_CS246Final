@@ -12,7 +12,7 @@ public:
 
     int getValue() const;
 
-    char getSymbol() const override;
+    char getSymbol() const override = 0;
 
     // This is for DragonHoard; the gold is presented 
     //  but cannot be picked up if dragon is not slain
@@ -24,21 +24,18 @@ public:
 export class NormalGold : public Treasure {
 public:
     NormalGold(int r, int c);
-    int getValue() const override;
     char getSymbol() const override;
 };
 
 export class SmallGold : public Treasure {
 public:
     SmallGold(int r, int c);
-    int getValue() const override;
     char getSymbol() const override;
 };
 
 export class MerchantHoard : public Treasure {
 public:
     MerchantHoard(int r, int c);
-    int getValue() const override;
     char getSymbol() const override;
 };
 
@@ -46,7 +43,6 @@ export class DragonHoard : public Treasure {
     bool dragonAlive;
 public:
     DragonHoard(int r, int c, bool alive = true);
-    int getValue() const override;
     char getSymbol() const override;
     bool isCollectible() const override;
 };

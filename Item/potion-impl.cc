@@ -12,9 +12,8 @@ bool Potion::isPotion() const { return true; }
 
 // RestoreHealthPotion
 RestoreHealthPotion::RestoreHealthPotion(int r, int c) : Potion(r, c, PotionType::RH) {}
-void RestoreHealthPotion::applyTo(Player& player) { player.modifyHP(+10); }
 char RestoreHealthPotion::getSymbol() const { return '0'; }
-void RestoreHealthPotion::use() { /* implement will be based on the player functions */ }
+void RestoreHealthPotion::use(class Player& player) { /* implement will be based on the player functions */ }
 //////////////////////////////// Example implementation /////////////////////////////////
 /* void RestoreHealthPotion::use(Player& player) {
     player.modifyHP(+10);
@@ -22,30 +21,25 @@ void RestoreHealthPotion::use() { /* implement will be based on the player funct
 
 // BoostAtkPotion
 BoostAtkPotion::BoostAtkPotion(int r, int c) : Potion(r, c, PotionType::BA) {}
-void BoostAtkPotion::applyTo(Player& player) { player.modifyAtk(+5); }
 char BoostAtkPotion::getSymbol() const { return '1'; }
-void BoostAtkPotion::use() { /* implement will be based on the player functions */ }
+void BoostAtkPotion::use(class Player& player) { /* implement will be based on the player functions */ }
 
 // BoostDefPotion
 BoostDefPotion::BoostDefPotion(int r, int c) : Potion(r, c, PotionType::BD) {}
-void BoostDefPotion::applyTo(Player& player) { player.modifyDef(+5); }
 char BoostDefPotion::getSymbol() const { return '2'; }
-void BoostDefPotion::use() { /* implement will be based on the player functions */ }
+void BoostDefPotion::use(class Player& player) { /* implement will be based on the player functions */ }
 
 // PoisonHealthPotion
 PoisonHealthPotion::PoisonHealthPotion(int r, int c) : Potion(r, c, PotionType::PH) {}
-void PoisonHealthPotion::applyTo(Player& player) { player.modifyHP(-10); }
 char PoisonHealthPotion::getSymbol() const { return '3'; }
-void PoisonHealthPotion::use() { /* implement will be based on the player functions */ }
+void PoisonHealthPotion::use(class Player& player) { /* implement will be based on the player functions */ }
 
 // WoundAtkPotion
 WoundAtkPotion::WoundAtkPotion(int r, int c) : Potion(r, c, PotionType::WA) {}
-void WoundAtkPotion::applyTo(Player& player) { player.modifyAtk(-5); }
 char WoundAtkPotion::getSymbol() const { return '4'; }
-void WoundAtkPotion::use() { /* implement will be based on the player functions */ }
+void WoundAtkPotion::use(class Player& player) { /* implement will be based on the player functions */ }
 
 // WoundDefPotion
 WoundDefPotion::WoundDefPotion(int r, int c) : Potion(r, c, PotionType::WD) {}
-void WoundDefPotion::applyTo(Player& player) { player.modifyDef(-5); }
 char WoundDefPotion::getSymbol() const { return '5'; }
-void WoundDefPotion::use() { /* implement will be based on the player functions */ }
+void WoundDefPotion::use(class Player& player) { /* implement will be based on the player functions */ }

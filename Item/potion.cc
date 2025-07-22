@@ -36,47 +36,41 @@ public:
 export class RestoreHealthPotion : public Potion {
 public:
     RestoreHealthPotion(int r, int c);
-    void applyTo(class Player& player);
     char getSymbol() const override;
-    void use() override;
+    void use(class Player& player) override;
 };
 
 export class BoostAtkPotion : public Potion {
 public:
     BoostAtkPotion(int r, int c);
-    void applyTo(class Player& player);
     char getSymbol() const override;
-    void use() override;
+    void use(class Player& player) override;
 };
 
 export class BoostDefPotion : public Potion {
 public:
     BoostDefPotion(int r, int c);
-    void applyTo(class Player& player);
     char getSymbol() const override;
-    void use() override;
+    void use(class Player& player) override;
 };
 
 export class PoisonHealthPotion : public Potion {
 public:
     PoisonHealthPotion(int r, int c);
-    void applyTo(class Player& player);
     char getSymbol() const override;
-    void use() override;
+    void use(class Player& player) override;
 };
 
 export class WoundAtkPotion : public Potion {
 public:
     WoundAtkPotion(int r, int c);
-    void applyTo(class Player& player);
     char getSymbol() const override;
-    void use() override;
+    void use(class Player& player) override;
 };
 
 export class WoundDefPotion : public Potion {
 public:
     WoundDefPotion(int r, int c);
-    void applyTo(class Player& player);
     char getSymbol() const override;
-    void use() override;
+    void use(class Player& player) override;
 };
