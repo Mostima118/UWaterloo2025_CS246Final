@@ -6,27 +6,27 @@ import item;
 NormalGold::NormalGold(int row, int col) : Treasure(row, col) {}
 
 int NormalGold::getValue() const {
-    return 2; // Example gold value
+    return 2; // Normal gold value
 }
 
 char NormalGold::getSymbol() const {
-    return '6'; // or whatever symbol you want for normal gold
+    return '6'; //symbol for normal gold
 }
 
 SmallGold::SmallGold(int row, int col) : Treasure(row, col) {}
 
 int SmallGold::getValue() const {
-    return 1; // Example small gold value
+    return 1; // Small gold value
 }
 
 char SmallGold::getSymbol() const {
-    return '7'; // symbol for small gold
+    return '7'; // symbol for Small gold
 }
 
 MerchantHoard::MerchantHoard(int row, int col) : Treasure(row, col) {}
 
 int MerchantHoard::getValue() const {
-    return 4; // example value
+    return 4; // Merchgold value
 }
 
 char MerchantHoard::getSymbol() const {
@@ -41,7 +41,7 @@ bool DragonHoard::isCollectible() const {
 }
 
 int DragonHoard::getValue() const {
-    return 6; // example value for dragon hoard
+    return 6; // value for dragon hoard
 }
 
 char DragonHoard::getSymbol() const {
