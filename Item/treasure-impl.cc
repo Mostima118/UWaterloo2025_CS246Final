@@ -6,7 +6,7 @@ int Treasure::getValue() const { return value; }
 
 bool Treasure::isCollectible() const { return true; }
 
-void Treasure::use() {
+void Treasure::use(Player& player) {
     // Treasure picked up logic
     // Example, incrementing in-game gold count:
     //  player->addGold(value);

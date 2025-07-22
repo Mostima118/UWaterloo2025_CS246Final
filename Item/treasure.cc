@@ -18,7 +18,7 @@ public:
     //  but cannot be picked up if dragon is not slain
     virtual bool isCollectible() const;
 
-    void use() override;
+    void use(class Player& player) override;
 };
 
 export class NormalGold : public Treasure {
