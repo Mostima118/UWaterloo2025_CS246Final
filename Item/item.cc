@@ -1,5 +1,6 @@
 export module item;
 
+import <string>;
 import <memory>;
 import <vector>;
 
@@ -25,7 +26,7 @@ public:
     //  or an int of it's applied on treasure
     // NEED TO BE FIXED //
     // Either overload use or make it return the same type
-    virtual char use() = 0;
+    virtual std::string use() = 0;
 
     // Symbol representation of potion "P" or treasure "G"
     virtual char getSymbol() const = 0;
