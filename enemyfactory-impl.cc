@@ -18,39 +18,39 @@ unique_ptr<Enemy> EnemyFactory::createRandomEnemy() {
     srand(time(0));
     int whichEnemy = rand() % 18; // get a number from 0 to 17
     if (whichEnemy < 4) { // if 0 to 3 (i.e. a 4/18 chance) spawn a human
-        return createEnemy("h");
+        return createEnemy('H');
     }
     else if (whichEnemy < 7) { // similar for dwarf (and all others after)
-        return createEnemy("w");
+        return createEnemy('W');
     }
     else if (whichEnemy < 12) {
-        return createEnemy("l");
+        return createEnemy('L');
     }
     else if (whichEnemy < 14) {
-        return createEnemy("e");
+        return createEnemy('E');
     }
     else if (whichEnemy < 16) {
-        return createEnemy("o");
+        return createEnemy('O');
     }
     else {
-        return createEnemy("m");
+        return createEnemy('M');
     }
 }
 
-unique_ptr<Enemy> EnemyFactory::createEnemy(const string &type) {
-    if (type == "h") {
+unique_ptr<Enemy> EnemyFactory::createEnemy(const char &type) {
+    if (type == 'H') {
         return make_unique<Human>(140, 140, 20, 20, 'H', "Human");
-    } else if (type == "w") {
+    } else if (type == 'W') {
         return make_unique<Dwarf>(100, 100, 20, 30, 'W', "Dwarf");
-    } else if (type == "e") {
+    } else if (type == 'E') {
         return make_unique<Elf>(140, 140, 30, 10, 'E', "Elf");
-    } else if (type == "o") {
+    } else if (type == 'O') {
         return make_unique<Orc>(180, 180, 30, 25, 'O', "Orc");
-    } else if (type == "m") {
+    } else if (type == 'M') {
         return make_unique<Merchant>(30, 30, 70, 5, 'M', "Merchant");
-    } else if (type == "d") {
-        return make_unique<Dragon>(150, 150, 20, 20, 'D', "Dragon");
-    } else if (type == "l") {
+    } else if (type == 'D') {
+        return make_unique<Dragon>(150, 150, 20, 20, 'D', "Dragon", Position{0, 0});
+    } else if (type == 'L') {
         return make_unique<Halfling>(100, 100, 15, 20, 'L', "Halfling");
     }
     return nullptr;
