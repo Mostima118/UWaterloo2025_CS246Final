@@ -30,6 +30,23 @@ std::unique_ptr<Item> Item::createRandomPotion(unsigned seed) {
     return nullptr;
 }
 
+std::unique_ptr<Item> Item::createPreset(char itemType) {
+    switch (itemType) {
+        case '0': return std::make_unique<RestoreHealthPotion>(-1, -1);
+        case '1': return std::make_unique<BoostAtkPotion>(-1, -1);
+        case '2': return std::make_unique<BoostDefPotion>(-1, -1);
+        case '3': return std::make_unique<PoisonHealthPotion>(-1, -1);
+        case '4': return std::make_unique<WoundAtkPotion>(-1, -1);
+        case '5': return std::make_unique<WoundDefPotion>(-1, -1);
+        case '6': return std::make_unique<NormalGold>(-1, -1);
+        case '7': return std::make_unique<SmallGold>(-1, -1);
+        case '8': return std::make_unique<MerchantHoard>(-1, -1);
+        case '9': return std::make_unique<DragonHoard>(-1, -1);
+    }
+    // Might need error handling based on the game engine
+    return nullptr;
+}
+
 std::unique_ptr<Item> Item::createRandomTreasure(unsigned seed) {
     unsigned actual = seed == 0 ? static_cast<unsigned>(std::time(nullptr)) : seed;
     std::srand(actual);

@@ -25,6 +25,7 @@ public:
 
     virtual bool isPotion() const;
 
+    std::unique_ptr<Item> createPreset(char itemType);
     static std::unique_ptr<Item> createRandomPotion(unsigned seed = 0);
     static std::unique_ptr<Item> createRandomTreasure(unsigned seed = 0);
         
