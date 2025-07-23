@@ -2,6 +2,7 @@ module item;
 
 import <cstdlib>;
 import <memory>;
+import <vector>;
 import potion;
 import treasure;
 

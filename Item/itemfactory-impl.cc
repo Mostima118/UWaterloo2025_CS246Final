@@ -2,6 +2,7 @@ module itemfactory;
 
 import <cstdlib>;
 import <memory>;
+import <vector>;
 import item;
 
 std::unique_ptr<Item> createPreset(char itemType) {

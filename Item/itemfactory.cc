@@ -1,6 +1,7 @@
 export module itemfactory;
 
 import <memory>;
+import <vector>;
 import item;
 
 export class ItemFactory {
