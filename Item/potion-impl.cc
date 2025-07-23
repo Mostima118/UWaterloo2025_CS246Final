@@ -15,7 +15,9 @@ bool Potion::isPotion() const { return true; }
 // RestoreHealthPotion
 RestoreHealthPotion::RestoreHealthPotion(int r, int c) : Potion(r, c, PotionType::RH) {}
 char RestoreHealthPotion::getSymbol() const { return '0'; }
-void RestoreHealthPotion::use(Player& player) { /* implement will be based on the player functions */ }
+void RestoreHealthPotion::use(Player& player) { 
+    return "";
+    /* implement will be based on the player functions */ }
 //////////////////////////////// Example implementation /////////////////////////////////
 /* void RestoreHealthPotion::use(Player& player) {
     player.modifyHP(+10);
