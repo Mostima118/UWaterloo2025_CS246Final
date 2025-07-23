@@ -1,5 +1,6 @@
 export module character;
 import <string>;
+import <memory>;
 
 
 struct Position {
@@ -34,7 +35,9 @@ export class Character {
    int calculateDamage(int attackerAtk) const;
    
    virtual void applySpecialAbility() = 0;
-   virtual void attackEffect(Character &target);
+
+   // take pointer so if target not found have null ptr and just do nothing
+   virtual void attackEffect(std::unique_ptr<Character> target);
    //virtual void defenseEffect(Character &attacker); // not actually necessary? can just have effects in attack
 
 };

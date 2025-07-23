@@ -9,6 +9,6 @@ export class Enemy : public Character {
     virtual ~Enemy() = default;
     virtual int dropGold() const;
 
-    void attackEffect(Character &target);
+    void attackEffect(std::unique_ptr<Character> target);
 
 };

@@ -1,6 +1,7 @@
 export module playercharacter;
 import character;
 import <string>;
+import <memory>;
 
 export class PlayerCharacter : public Character {
  protected:
@@ -22,7 +23,7 @@ export class PlayerCharacter : public Character {
     virtual void resetPotions();
 
     virtual int calculateScore() const;
-    virtual void attackEffect(Character &target) override;
+    virtual void attackEffect(std::unique_ptr<Character> target) override;
     virtual void specialAbility() override;
 
 };

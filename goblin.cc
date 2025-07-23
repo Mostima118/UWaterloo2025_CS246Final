@@ -4,5 +4,5 @@ import playercharacter;
 export class Goblin : public PlayerCharacter {
  public:
     Goblin();
-    void attackEffect(Character &target) override;
+    void attackEffect(std::unique_ptr<Character> target) override;
 };

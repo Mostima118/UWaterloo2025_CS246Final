@@ -22,11 +22,15 @@ int Enemy::dropGold() const {
     }
 }
 
-void Enemy::attackEffect(Character &target) {
+void Enemy::attackEffect(unique_ptr<Character> target) {
+    if (target == nullptr) {
+        return;
+    }
+    
     srand(time(0));
     int miss = rand() % 2;
     if (miss == 0) { // only hits 50% of the time
-        int damage = target.calculateDamage(atk);
-        target.setHP(target.getHP() - damage);
+        int damage = target->calculateDamage(atk);
+        target->setHP(target->getHP() - damage);
     }
 }

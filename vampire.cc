@@ -4,5 +4,5 @@ import playercharacter;
 export class Vampire : public PlayerCharacter {
  public:
     Vampire();
-    void attackEffect(Character &target) override;
+    void attackEffect(std::unique_ptr<Character> target) override;
 };

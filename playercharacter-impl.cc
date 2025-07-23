@@ -69,16 +69,20 @@ int PlayerCharacter::calculateScore() const {
 
 
 // default behaviour, may be overriden by subclasses
-void PlayerCharacter::attackEffect(Character &target) {
-    int damage = target.calculateDamage(atk);
-    if (target.getType() == "Halfling") { // if attacking a halfling might miss
+void PlayerCharacter::attackEffect(unique_ptr<Character> target) {
+    if (target == nullptr) {
+        return;
+    }
+    
+    int damage = target->calculateDamage(atk);
+    if (target->getType() == "Halfling") { // if attacking a halfling might miss
         srand(time(0));
         int miss = rand() % 2;
         if (miss == 0) {
             return;
         }
     }
-    target.setHP(target.getHP() - damage);
+    target->setHP(target->getHP() - damage);
 }
 
 
