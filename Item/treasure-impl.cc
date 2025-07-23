@@ -6,6 +6,8 @@ int Treasure::getValue() const { return value; }
 
 bool Treasure::isCollectible() const { return true; }
 
+char Treasure::getSymbol() const { return 'G'; }
+
 void Treasure::use(Player& player) {
     // Treasure picked up logic
     // Example, incrementing in-game gold count:
@@ -28,6 +30,9 @@ char MerchantHoard::getSymbol() const { return '8'; }
 DragonHoard::DragonHoard(int r, int c, bool alive) : Treasure(r, c, 6), dragonAlive{alive} {}
 char DragonHoard::getSymbol() const { return '9'; }
 
+// change this function to canCollect
 bool DragonHoard::isCollectible() const {
     return !dragonAlive;
 }
+
+// bool canCollect

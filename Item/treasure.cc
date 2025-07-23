@@ -12,6 +12,10 @@ public:
 
     int getValue() const;
 
+    // This return the symbol of the Gold
+    char getSymbol() const;
+
+    // Remember to change the name of the function to something like getNum
     char getSymbol() const override = 0;
 
     // This is for DragonHoard; the gold is presented 

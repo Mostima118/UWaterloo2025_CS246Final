@@ -29,6 +29,10 @@ public:
 
     bool isPotion() const override;
 
+    // This return the symbol of the Gold
+    char getSymbol() const;
+
+    // Remember to change the name of the function to something like getNum
     char getSymbol() const override = 0;
     void use() override = 0;
 };

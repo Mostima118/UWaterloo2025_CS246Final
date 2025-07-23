@@ -8,6 +8,8 @@ PotionType Potion::getPotionType() const { return potionType; }
 bool Potion::isIdentified() const { return identified; }
 void Potion::identify() { identified = true; }
 
+char Treasure::getSymbol() const { return 'P'; }
+
 bool Potion::isPotion() const { return true; }
 
 // RestoreHealthPotion

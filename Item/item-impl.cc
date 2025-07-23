@@ -16,6 +16,7 @@ void Item::setPosition(int r, int c) { row = r; col = c; }
 
 bool Item::isPotion() const { return false; }
 
+// Take a look of the rand function, I might use a same seed constantly
 std::unique_ptr<Item> Item::createRandomPotion() {
     int r = std::rand() % 6;
     switch (r) {
@@ -29,13 +30,15 @@ std::unique_ptr<Item> Item::createRandomPotion() {
     return nullptr;
 }
 
+// std::srand(std::time(nullptr)); // use current time as seed
+// Take a look of the rand function, I might use a same seed constantly
 std::unique_ptr<Item> Item::createRandomTreasure() {
-    int r = std::rand() % 4;
-    switch (r) {
-        case 0: return std::make_unique<NormalGold>(-1, -1);
-        case 1: return std::make_unique<SmallGold>(-1, -1);
-        case 2: return std::make_unique<MerchantHoard>(-1, -1);
-        case 3: return std::make_unique<DragonHoard>(-1, -1);
+    int r = std::rand() % 8;
+    if (r < 5) {
+        return std::make_unique<NormalGold>(-1, -1);
+    } else if (r == 5) {
+        return std::make_unique<DragonHoard>(-1, -1);
+    } else {
+        return std::make_unique<SmallGold>(-1, -1);
     }
-    return nullptr;
 }
