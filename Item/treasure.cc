@@ -22,6 +22,8 @@ public:
     // Return false, treasure is not a potion
     bool isPotion() const override;
 
+    virtual bool isDragonHoard() const { return false; }
+
     // For DragonHoard: only collectible when dragon is slain
     virtual bool canCollect() const override = 0;
 
@@ -52,15 +54,24 @@ public:
     MerchantHoard(int x, int y);
     char getSymbol() const override;
     char getType() const override;
-    int use(class Player& player) const override;
+    int use() const override;
 };
 
 export class DragonHoard : public Treasure {
     bool dragonAlive;
+private:
+    bool status;
 public:
     DragonHoard(int x, int y, bool alive = true);
     char getSymbol() const override;
     char getType() const override;
-    bool isCollectible() const override;
-    int use(class Player& player) const override;
+    bool canCollect() const override;
+    bool isDragonHoard() const override { return true; }
+    int use() const override;
+
+    // getStatus returns whether the hoard has been stepped on or not
+    bool getStatus() const;
+
+    // changeStatus change the status from true to false and vice versa
+    void changeStatus();
 };

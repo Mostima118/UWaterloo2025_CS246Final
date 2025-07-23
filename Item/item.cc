@@ -33,6 +33,9 @@ public:
 
     virtual bool isPotion() const;
 
+    // Check if an item is a dragon hoard, defaulted to false
+    virtual bool isDragonHoard() const { return false; }
+
     // Create item based on the preset ('0' - '9'), used for testing purposes
     static std::unique_ptr<Item> createPreset(char itemType);
 

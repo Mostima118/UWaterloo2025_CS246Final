@@ -50,7 +50,8 @@ int MerchantGold::use() const {
 }
 
 // ===== DragonHoard =====
-DragonHoard::DragonHoard(int x, int y, bool alive) : Treasure(x, y, 6), dragonAlive{alive} {}
+DragonHoard::DragonHoard(int x, int y, bool alive) 
+    : Treasure(x, y, 6), dragonAlive{alive}, status{false} {}
 
 char DragonHoard::getType() const { return '9'; }
 
@@ -60,4 +61,16 @@ bool DragonHoard::canCollect() const {
 
 int DragonGold::use() const {
     return value;
+}
+
+bool DragonHoard::isDragonHoard() const {
+    return true;
+}
+
+bool DragonHoard::getStatus() const {
+    return status;
+}
+
+void DragonHoard::changeStatus() {
+    status = !status;
 }
