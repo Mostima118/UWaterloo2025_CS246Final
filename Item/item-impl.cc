@@ -2,23 +2,20 @@ module item;
 
 import <cstdlib>;
 import <memory>;
-import allpotions;
-import alltreasures;
+import potion;
+import treasure;
 
-Item::Item(int r, int c) : row{r}, col{c} {}
+Item::Item(int x, int y) : x{x}, y{y} {}
 
-int Item::getRow() const { return row; }
-int Item::getCol() const { return col; }
+int Item::getRow() const { return x; }
+int Item::getCol() const { return y; }
 
 // This function is to change the coordinates of the item after created
-//  Not necessarily needed
-void Item::setPosition(int r, int c) { row = r; col = c; }
+void Item::setPosition(int x, int y) { this->x = x; this->y = y; }
 
 bool Item::isPotion() const { return false; }
 
-// Take a look of the rand function, I might use a same seed constantly
 std::unique_ptr<Item> Item::createRandomPotion(unsigned seed) {
-    // Check if this is syntactically correct
     unsigned actual = seed == 0 ? static_cast<unsigned>(std::time(nullptr)) : seed;
     std::srand(actual);
     int r = std::rand() % 6;
@@ -33,8 +30,6 @@ std::unique_ptr<Item> Item::createRandomPotion(unsigned seed) {
     return nullptr;
 }
 
-// std::srand(std::time(nullptr)); // use current time as seed
-// Take a look of the rand function, I might use a same seed constantly
 std::unique_ptr<Item> Item::createRandomTreasure(unsigned seed) {
     unsigned actual = seed == 0 ? static_cast<unsigned>(std::time(nullptr)) : seed;
     std::srand(actual);
@@ -46,4 +41,15 @@ std::unique_ptr<Item> Item::createRandomTreasure(unsigned seed) {
     } else {
         return std::make_unique<SmallGold>(-1, -1);
     }
+}
+
+std::vector<std::unique_ptr<Item>> Item::createGold(char c) {
+    std::vector<std::unique_ptr<Item>> goldItems;
+    if (c == 'H') {
+        goldItems.emplace_back(std::make_unique<NormalGold>(-1, -1));
+        goldItems.emplace_back(std::make_unique<NormalGold>(-1, -1));
+    } else if (c == 'M') {
+        goldItems.emplace_back(std::make_unique<MerchantHoard>(-1, -1));
+    }
+    return goldItems;
 }

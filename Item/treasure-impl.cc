@@ -1,38 +1,63 @@
 module treasure;
 
-Treasure::Treasure(int r, int c, int val) : Item(r, c), value{val} {}
+Treasure::Treasure(int x, int y, int val) : Item(x, y), value{val} {}
 
 int Treasure::getValue() const { return value; }
 
-bool Treasure::isCollectible() const { return true; }
+bool Treasure::canCollect() const { return true; }
+
+bool Treasure::isPotion() const { return false; }
 
 char Treasure::getSymbol() const { return 'G'; }
 
-void Treasure::use(Player& player) {
-    // Treasure picked up logic
-    // Example, incrementing in-game gold count:
-    //  player->addGold(value);
+// ===== NormalGold =====
+NormalGold::NormalGold(int x, int y) : Treasure(x, y, 2) {}
+
+char NormalGold::getType() const { return '6'; }
+
+bool NormalHoard::canCollect() const {
+    return true;
 }
 
-// NormalGold
-NormalGold::NormalGold(int r, int c) : Treasure(r, c, 2) {}
-char NormalGold::getSymbol() const { return '6'; }
+int NormalGold::use() const {
+    return value;
+}
 
-// SmallGold
-SmallGold::SmallGold(int r, int c) : Treasure(r, c, 1) {}
-char SmallGold::getSymbol() const { return '7'; }
+// ===== SmallGold =====
+SmallGold::SmallGold(int x, int y) : Treasure(x, y, 1) {}
 
-// MerchantHoard
-MerchantHoard::MerchantHoard(int r, int c) : Treasure(r, c, 4) {}
-char MerchantHoard::getSymbol() const { return '8'; }
+char SmallGold::getType() const { return '7'; }
 
-// DragonHoard
-DragonHoard::DragonHoard(int r, int c, bool alive) : Treasure(r, c, 6), dragonAlive{alive} {}
-char DragonHoard::getSymbol() const { return '9'; }
+bool SmallHoard::canCollect() const {
+    return true;
+}
 
-// change this function to canCollect
-bool DragonHoard::isCollectible() const {
+int SmallGold::use() const {
+    return value;
+}
+
+// ===== MerchantHoard =====
+MerchantHoard::MerchantHoard(int x, int y) : Treasure(x, y, 4) {}
+
+char MerchantHoard::getType() const { return '8'; }
+
+bool MerchantHoard::canCollect() const {
+    return true;
+}
+
+int MerchantGold::use() const {
+    return value;
+}
+
+// ===== DragonHoard =====
+DragonHoard::DragonHoard(int x, int y, bool alive) : Treasure(x, y, 6), dragonAlive{alive} {}
+
+char DragonHoard::getType() const { return '9'; }
+
+bool DragonHoard::canCollect() const {
     return !dragonAlive;
 }
 
-// bool canCollect
+int DragonGold::use() const {
+    return value;
+}
