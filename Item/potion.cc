@@ -38,7 +38,7 @@ public:
     // getType function returns the NUMBER correlated with the potion
     //  Ex. Restore Health (RH) is '0', Boost Atk (BA) is '1' ...
     char getType() const override = 0;
-    void use() override = 0;
+    char use() override = 0;
 };
 
 // Below are the interfaces of different type of potions
@@ -47,7 +47,7 @@ export class RestoreHealthPotion : public Potion {
 public:
     RestoreHealthPotion(int x, int y);
     char getSymbol() const override;
-    void use(class Player& player) override;
+    char use() override;
 };
 
 // BA
@@ -55,7 +55,7 @@ export class BoostAtkPotion : public Potion {
 public:
     BoostAtkPotion(int x, int y);
     char getSymbol() const override;
-    void use(class Player& player) override;
+    char use() override;
 };
 
 // BD
@@ -63,7 +63,7 @@ export class BoostDefPotion : public Potion {
 public:
     BoostDefPotion(int x, int y);
     char getSymbol() const override;
-    void use(class Player& player) override;
+    char use() override;
 };
 
 // PH
@@ -71,7 +71,7 @@ export class PoisonHealthPotion : public Potion {
 public:
     PoisonHealthPotion(int x, int y);
     char getSymbol() const override;
-    void use(class Player& player) override;
+    char use() override;
 };
 
 // WA
@@ -79,7 +79,7 @@ export class WoundAtkPotion : public Potion {
 public:
     WoundAtkPotion(int x, int y);
     char getSymbol() const override;
-    void use(class Player& player) override;
+    char use() override;
 };
 
 // WD
@@ -87,5 +87,5 @@ export class WoundDefPotion : public Potion {
 public:
     WoundDefPotion(int x, int y);
     char getSymbol() const override;
-    void use(class Player& player) override;
+    char use() override;
 };

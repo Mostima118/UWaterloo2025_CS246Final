@@ -36,7 +36,7 @@ public:
     NormalGold(int x, int y);
     char getSymbol() const override;
     char getType() const override;
-    void use(class Player& player) const override;
+    int use() const override;
 };
 
 export class SmallGold : public Treasure {
@@ -44,7 +44,7 @@ public:
     SmallGold(int x, int y);
     char getSymbol() const override;
     char getType() const override;
-    void use(class Player& player) const override;
+    int use() const override;
 };
 
 export class MerchantHoard : public Treasure {
@@ -52,7 +52,7 @@ public:
     MerchantHoard(int x, int y);
     char getSymbol() const override;
     char getType() const override;
-    void use(class Player& player) const override;
+    int use(class Player& player) const override;
 };
 
 export class DragonHoard : public Treasure {
@@ -62,5 +62,5 @@ public:
     char getSymbol() const override;
     char getType() const override;
     bool isCollectible() const override;
-    void use(class Player& player) const override;
+    int use(class Player& player) const override;
 };
