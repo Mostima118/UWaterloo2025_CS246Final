@@ -21,7 +21,7 @@ public:
     // getType will return the preset number ('0' - '9') of each item
     virtual char getType() = 0;
 
-    // use will return a char to represent the potion 
+    // use will return a string to represent the potion 
     //  or an int of it's applied on treasure
     // NEED TO BE FIXED //
     // Either overload use or make it return the same type
