@@ -2,14 +2,9 @@ import <iostream>;
 import <string>;
 import engine;
 
-int main(int argc, char* argv[]) {
-    
-    std::string layoutFile;            // empty => randomized
-    unsigned seed = 0;                 // 0 => time-based seed
-
-    // Todo: parse command-line arguments for race, layoutFile, and seed
-
-    cc3k::GameEngine engine{layoutFile, seed};
-    engine.run();
+int main(int argc,char* argv[]) {
+    std::string lf = argc>1?argv[1]:"default_floor.txt";
+    cc3k::GameEngine eng{lf,0};
+    eng.run();
     return 0;
 }

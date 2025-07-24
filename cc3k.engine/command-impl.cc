@@ -37,8 +37,7 @@ Command CommandInterp::parse(const std::string& cmd) const {
     if (cmd == "a se")                       return Command::AttackSE;
     if (cmd == "a sw")                       return Command::AttackSW;
     // stairs
-    if (cmd == "u")                          return Command::UpStairs;
-    if (cmd == "d")                          return Command::DownStairs;
+
     // control toggles
     if (cmd == "toggle_enhancements")         return Command::ToggleEnhancements;
     if (cmd == "q" || cmd == "quit")        return Command::Quit;

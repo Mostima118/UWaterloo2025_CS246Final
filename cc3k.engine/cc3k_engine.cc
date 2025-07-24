@@ -12,13 +12,13 @@ import item;
 namespace cc3k {
 
 struct Position { int x,y; };
-bool operator==(const Position& a, const Position& b) {}
+bool operator==(const Position& a, const Position& b);
 struct FloorData {
     std::vector<std::string> map;
-    Position stairs;
-
+    Position stair;
     std::vector<std::unique_ptr<Item>> items;
     std::vector<std::unique_ptr<Enemy>> enemies;
+    std::vector<std::vector<Position>> chambers;  // CHANGED: store chambers here
 };
 
 export class GameEngine {
@@ -27,7 +27,7 @@ public:
     void run();
 
 private:
-
+    void spawnPlayer(FloorData& fd);
     std::string layoutFile_;
     unsigned seed_;
     std::string raceCode_;
@@ -38,7 +38,7 @@ private:
     FloorGenerator floorGen_;
 
     std::unique_ptr<Player> player_;
-    int playerGold_;
+    //int playerGold_;
     bool enhancementsEnabled_;
 
     std::vector<FloorData> floors_;
