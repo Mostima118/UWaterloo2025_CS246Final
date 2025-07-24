@@ -23,11 +23,19 @@ Command CommandInterp::parse(const std::string& cmd) const {
     if (cmd == "u so")                       return Command::UsePotionSouth;
     if (cmd == "u ea")                       return Command::UsePotionEast;
     if (cmd == "u we")                       return Command::UsePotionWest;
+    if (cmd == "u ne")                       return Command::UsePotionNE;
+    if (cmd == "u nw")                       return Command::UsePotionNW;
+    if (cmd == "u se")                       return Command::UsePotionSE;
+    if (cmd == "u sw")                       return Command::UsePotionSW;
     // attack
     if (cmd == "a no")                       return Command::AttackNorth;
     if (cmd == "a so")                       return Command::AttackSouth;
     if (cmd == "a ea")                       return Command::AttackEast;
     if (cmd == "a we")                       return Command::AttackWest;
+    if (cmd == "a ne")                       return Command::AttackNE;
+    if (cmd == "a nw")                       return Command::AttackNW;
+    if (cmd == "a se")                       return Command::AttackSE;
+    if (cmd == "a sw")                       return Command::AttackSW;
     // stairs
     if (cmd == "u")                          return Command::UpStairs;
     if (cmd == "d")                          return Command::DownStairs;
