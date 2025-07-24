@@ -376,6 +376,7 @@ void GameEngine::updateState() {
 //coloring not yet implemented, stats and action not yet implemented
 // render
 void GameEngine::render() const {
+    // Check this, if floorNum_ returns the actual floor number
     const auto& fd = floors_[floorNum_];
     const auto& map = fd.map;
 
