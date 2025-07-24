@@ -15,8 +15,8 @@ struct Position { int x,y; };
 bool operator==(const Position& a, const Position& b) {}
 struct FloorData {
     std::vector<std::string> map;
-    Position upStair;
-    Position downStair;
+    Position stairs;
+
     std::vector<std::unique_ptr<Item>> items;
     std::vector<std::unique_ptr<Enemy>> enemies;
 };

@@ -24,11 +24,14 @@ GameEngine::GameEngine(std::string layoutFile, unsigned seed)
       enhancementsEnabled_{false},   
       gameOver_{false}               
 {}
-
+void setTile(int x, int y, char ch) {
+    map_[y][x] = ch;
+}
 void GameEngine::run() {
     bool replay;
     do {
         selectRace(); floors_.clear(); floorNum_=1;
+        
         preGenerateFloors();
         // place player on first floor, not on stairs
         { auto &fd=floors_[0]; int h=fd.map.size(), w=fd.map[0].size();
@@ -97,12 +100,66 @@ void GameEngine::preGenerateFloors() {
 
         // 3) Spawn items and enemies in the remaining '.' tiles
         fd.items   = floorGen_.spawnItems(seed_ + i);
-        fd.enemies = floorGen_.spawnEnemies(seed_ + i);
+        fd.enemies = floorGen_.spawnEnemies(seed_ + i, fd.items);
 
         floors_.push_back(std::move(fd));
     }
 }
 
+Character* GameEngine::getTargetCharacter(Command cmd) {
+    auto &fd = floors_[floorNum_ - 1];
+    Position pcPos = player_->getPosition();
+    int dx = 0, dy = 0;
+
+    switch (cmd) {
+        case Command::AttackNorth: dy = -1; break;
+        case Command::AttackSouth: dy = 1;  break;
+        case Command::AttackEast:  dx = 1;  break;
+        case Command::AttackWest:  dx = -1; break;
+        case Command::AttackNE:    dx = 1; dy = -1; break;
+        case Command::AttackNW:    dx = -1; dy = -1; break;
+        case Command::AttackSE:    dx = 1; dy = 1; break;
+        case Command::AttackSW:    dx = -1; dy = 1; break;
+        default: return nullptr;
+    }
+
+    Position targetPos{pcPos.x + dx, pcPos.y + dy};
+
+    for (auto &e : fd.enemies) {
+        if (e->isAlive() && e->getPosition() == targetPos) {
+            return e.get();  
+        }
+    }
+
+    return nullptr;
+}
+std::string GameEngine::getTargetPotion(Command cmd) {
+    auto &fd = floors_[floorNum_ - 1];
+    Position pcPos = player_->getPosition();
+    int dx = 0, dy = 0;
+
+    switch (cmd) {
+        case Command::UsePotionNorth: dy = -1; break;
+        case Command::UsePotionSouth: dy = 1;  break;
+        case Command::UsePotionEast:  dx = 1;  break;
+        case Command::UsePotionWest:  dx = -1; break;
+        case Command::UsePotionNE:    dx = 1; dy = -1; break;
+        case Command::UsePotionNW:    dx = -1; dy = -1; break;
+        case Command::UsePotionSE:    dx = 1; dy = 1; break;
+        case Command::UsePotionSW:    dx = -1; dy = 1; break;
+        default: return nullptr;
+    }
+
+    Position targetPos{pcPos.x + dx, pcPos.y + dy};
+
+    for (auto &e : fd.items) {
+        if (e->isPotion() && e->getPosition() == targetPos) {
+            return e.use();  
+        }
+    }
+
+    return "null";
+}
 bool GameEngine::processInput() {
     std::cout<<"> "; std::string in;
     if(!std::getline(std::cin,in)) return true;
@@ -120,37 +177,86 @@ bool GameEngine::processInput() {
     }
     handleCommand(c); return false;
 }
-
+bool GameEngine::isValidMove(Command cmd) {
+    auto pos=player_->getPosition();
+    //check if currently stepping on dragon hoard, if yes then change status after move as dh is no longer being stepped on
+    for (auto &e : fd.items) {
+        //canCollect don't run if e is not DH
+        if (e->isDragonHoard() && e->!canCollect() && e->getPosition() == pos) {
+            e->changeStatus();          
+        }
+    }
+    switch(cmd) {
+        case Command::MoveNorth: --pos.y; break;
+        case Command::MoveSouth: ++pos.y;  break;
+        case Command::MoveEast:  ++pos.x;  break;
+        case Command::MoveWest:  --pos.x; break;
+        case Command::MoveNE:    --pos.y; ++pos.x; break;
+        case Command::MoveNW:    --pos.y; --pos.x;break;
+        case Command::MoveSE:    ++pos.y; ++pos.x;  break;
+        case Command::MoveSW:    ++pos.y; --pos.x; break;
+    }
+    if (fd.map[pos.y][pos.x] == '.') return true;
+    if (fd.map[pos.y][pos.x] == '+') return true;
+    if (fd.map[pos.y][pos.x] == '#') return true;
+    if (fd.map[pos.y][pos.x] == '<') return true;
+    if (fd.map[pos.y][pos.x] == '>') return true;
+    
+    auto &fd = floors_[floorNum_ - 1];
+    for (auto &e : fd.items) {
+        //canCollect don't run if e is not DH
+        if (e->isDragonHoard() && !e->canCollect() && e->getPosition() == pos) {
+            e->changeStatus(); //change to being stepped on
+            return true;             
+        }
+    }
+    //dragon hoard already checked
+    if (fd.map[pos.y][pos.x] != 'G') return true;
+    return false;
+}
 void GameEngine::handleCommand(Command cmd) {
     auto &fd = floors_[floorNum_-1]; auto pos=player_->getPosition();
+    if((cmd == Command::MoveNorth ||
+        cmd == Command::MoveSouth ||
+        cmd == Command::MoveEast ||
+        cmd == Command::MoveWest ||
+        cmd == Command::MoveNE ||
+        cmd == Command::MoveNW ||
+        cmd == Command::MoveSE ||
+        cmd == Command::MoveSW) && isValidMove(cmd)) {
+            switch(cmd) {
+                case Command::MoveNorth: player_->move(0,-1); break;
+                case Command::MoveSouth: player_->move(0,1);  break;
+                case Command::MoveEast:  player_->move(1,0);  break;
+                case Command::MoveWest:  player_->move(-1,0); break;
+                case Command::MoveNE:    player_->move(1,-1); break;
+                case Command::MoveNW:    player_->move(-1,-1);break;
+                case Command::MoveSE:    player_->move(1,1);  break;
+                case Command::MoveSW:    player_->move(-1,1); break;
+            }
+    }
     switch(cmd) {
-        case Command::MoveNorth: player_->move(0,-1); break;
-        case Command::MoveSouth: player_->move(0,1);  break;
-        case Command::MoveEast:  player_->move(1,0);  break;
-        case Command::MoveWest:  player_->move(-1,0); break;
-        case Command::MoveNE:    player_->move(1,-1); break;
-        case Command::MoveNW:    player_->move(-1,-1);break;
-        case Command::MoveSE:    player_->move(1,1);  break;
-        case Command::MoveSW:    player_->move(-1,1); break;
         case Command::UpStairs:
             if(pos.x==fd.upStair.x&&pos.y==fd.upStair.y&&floorNum_>1) {
                 floorNum_--; player_->setPosition(floors_[floorNum_-1].downStair);
+                player_->resetPotion();
             }
             break;
         case Command::DownStairs:
             if(pos.x==fd.downStair.x&&pos.y==fd.downStair.y&&floorNum_<5) {
                 floorNum_++; player_->setPosition(floors_[floorNum_-1].upStair);
+                player_->resetPotion();
             }
             break;
-        case Command::UsePotionNorth: player_->usePotion(Direction::North);   break;
-        case Command::UsePotionSouth: player_->usePotion(Direction::South);   break;
-        case Command::UsePotionEast:  player_->usePotion(Direction::East);    break;
-        case Command::UsePotionWest:  player_->usePotion(Direction::West);    break;
-        case Command::AttackNorth:    player_->attack(Direction::North);      break;
-        case Command::AttackSouth:    player_->attack(Direction::South);      break;
-        case Command::AttackEast:     player_->attack(Direction::East);       break;
-        case Command::AttackWest:     player_->attack(Direction::West);       break;
-        default: break;
+        case Command::AttackNorth: player_->attack(getTargetCharacter(cmd)); break;
+        case Command::AttackSouth: player_->attack(getTargetCharacter(cmd)); break;
+        case Command::AttackEast:  player_->attack(getTargetCharacter(cmd)); break;
+        case Command::AttackWest:  player_->attack(getTargetCharacter(cmd)); break;
+        case Command::AttackNE:    player_->attack(getTargetCharacter(cmd)); break;
+        case Command::AttackNW:    player_->attack(getTargetCharacter(cmd)); break;
+        case Command::AttackSE:    player_->attack(getTargetCharacter(cmd)); break;
+        case Command::AttackSW:    player_->attack(getTargetCharacter(cmd)); break;
+        default: player_->usePotion(getTargetPotion(cmd)); break;
     }
 }
 //enemy retaliation, move enemy, clean up ... etc
@@ -186,7 +292,7 @@ void GameEngine::updateState() {
 
     for (size_t idx : order) {
         auto &e = enemies[idx];
-        if (e->getType() == EnemyType::Dragon || moved[idx]) continue;
+        if (e->getType() == "Dragon" || moved[idx]) continue;
 
         Position cur = e->getPosition();
         std::vector<Position> cand;
@@ -196,15 +302,13 @@ void GameEngine::updateState() {
             if (np.y < 0 || np.y >= (int)fd.map.size() ||
                 np.x < 0 || np.x >= (int)fd.map[0].size()) continue;
             if (fd.map[np.y][np.x] != '.') continue;
-            // not occupied by another enemy or the player
-            bool occ = false;
-            for (auto &o : enemies)
-                if (o.get() != e.get() && o->getPosition() == np) { occ = true; break; }
-            if (occ || player_->getPosition() == np) continue;
+            
             cand.push_back(np);
         }
         if (cand.empty()) continue;
+        floorGen_.setTile(cur.x, cur.y, '.'); //return to '.'
         Position dest = cand[std::rand() % cand.size()];
+        floorGen_.setTile(dest.x, dest.y, e->getSymbol()); //set to enemy symbol
         e->setPosition(dest.x, dest.y);
         moved[idx] = true;
     }
@@ -212,7 +316,30 @@ void GameEngine::updateState() {
     // 4) Cleanup dead enemies & collect their gold
     for (auto it = fd.enemies.begin(); it != fd.enemies.end();) {
         if (!(*it)->isAlive()) {
-            playerGold_ += (*it)->dropGold();
+            switch((*it)->getType()) {
+                case "Human":
+                    items.push_back(ItemFactory::createGold('H'));//createGold is for dead humans only
+                    items.back()->setPosition(p.x, p.y); //last item added
+                    floorGen_.setTile(p.x, p.y, 'G');
+                    break;
+                case "Dragon":
+                    Position ex = (*it)->getPosition();
+                    for (auto &e : fd.items) {
+                        Position ep = e->getPosition();
+                        if (ex == ep) {};
+                    }
+                    break;
+                case "Merchant":
+                    if (!isHostile) (*it)->setHostile();
+                    floorGen_.setTile(p.x, p.y, 'G');
+                    items.push_back(ItemFactory::createGold('G'));                 
+                    break;
+                default:
+                // 3) Otherwise add gold directly
+                    playerGold_ += (*it)->dropGold();
+                    floorGen_.setTile(p.x, p.y, '.');
+                break;
+            }
             it = fd.enemies.erase(it);
         } else {
             ++it;
@@ -222,11 +349,12 @@ void GameEngine::updateState() {
     // 5) Item pickups
     for (auto it = fd.items.begin(); it != fd.items.end();) {
         if ((*it)->getPosition() == player_->getPosition()) {
-            if ((*it)->isPotion())
-                player_->applyPotion(static_cast<Potion&>(**it));
-            else
+            //dragonHoard
+            if ((*it)->isGold() || ((*it)->isDragonHoard()&&(*it)->canCollect())) {
                 playerGold_ += (*it)->getValue();
-            it = fd.items.erase(it);
+                floorGen_.setTile( (*it)->getPosition().x, (*it)->getPosition().y, '.' ); // calls setTile with '.' char
+                it = fd.items.erase(it); 
+            }
         } else {
             ++it;
         }
@@ -236,16 +364,19 @@ void GameEngine::updateState() {
     if (!player_->isAlive()) {
         gameOver_ = true;
     }
-
+    /*
     // 7) Mid-turn stair handling (just in case)
     pos = player_->getPosition();
     if (pos == fd.downStair && floorNum_ < (int)floors_.size()) {
         floorNum_++;
         player_->setPosition(floors_[floorNum_ - 1].upStair);
+        player_->resetPotion();
     } else if (pos == fd.upStair && floorNum_ > 1) {
         floorNum_--;
         player_->setPosition(floors_[floorNum_ - 1].downStair);
+        player_->resetPotion();
     }
+        */
 }
 
 //coloring not yet implemented, stats and action not yet implemented
@@ -253,6 +384,8 @@ void GameEngine::render() const {
     const auto &fd=floors_[floorNum_-1];
     for(const auto &row:fd.map) std::cout<<row<<"\n";
     std::cout<<"Gold: "<<playerGold_<<"  Score: "<<calculateScore()<<"\n";
+
+
 }
 
 int GameEngine::calculateScore() const {
