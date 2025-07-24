@@ -58,18 +58,25 @@ public:
 };
 
 export class DragonHoard : public Treasure {
-    bool dragonAlive;
 private:
-    bool status;
+    bool status;          // Status for stepping on the hoard
+    bool collectStatus;   // Status for collecting the hoard
 public:
     DragonHoard(int x, int y, bool alive = true);
     char getSymbol() const override;
     char getType() const override;
+
+    // Returns the collectStatus
     bool canCollect() const override;
+
+    // changeCollectStatus changes the collectStatus
+    void changeCollectStatus();
+
     bool isDragonHoard() const override { return true; }
     int use() const override;
 
-    // getStatus returns whether the hoard has been stepped on or not
+    // getStatus shows whether the hoard has been stepped on or not
+    //  Returns status
     bool getStatus() const;
 
     // changeStatus change the status from true to false and vice versa

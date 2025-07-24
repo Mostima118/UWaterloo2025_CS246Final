@@ -15,7 +15,7 @@ NormalGold::NormalGold(int x, int y) : Treasure(x, y, 2) {}
 
 char NormalGold::getType() const { return '6'; }
 
-bool NormalHoard::canCollect() const {
+bool NormalGold::canCollect() const {
     return true;
 }
 
@@ -28,7 +28,7 @@ SmallGold::SmallGold(int x, int y) : Treasure(x, y, 1) {}
 
 char SmallGold::getType() const { return '7'; }
 
-bool SmallHoard::canCollect() const {
+bool SmallGold::canCollect() const {
     return true;
 }
 
@@ -45,21 +45,17 @@ bool MerchantHoard::canCollect() const {
     return true;
 }
 
-int MerchantGold::use() const {
+int MerchantHoard::use() const {
     return value;
 }
 
 // ===== DragonHoard =====
 DragonHoard::DragonHoard(int x, int y, bool alive) 
-    : Treasure(x, y, 6), dragonAlive{alive}, status{false} {}
+    : Treasure(x, y, 6), status{false}, collectStatus{false} {}
 
 char DragonHoard::getType() const { return '9'; }
 
-bool DragonHoard::canCollect() const {
-    return !dragonAlive;
-}
-
-int DragonGold::use() const {
+int DragonHoard::use() const {
     return value;
 }
 
@@ -73,4 +69,12 @@ bool DragonHoard::getStatus() const {
 
 void DragonHoard::changeStatus() {
     status = !status;
+}
+
+bool DragonHoard::canCollect() const {
+    return collectStatus;
+}
+
+void DragonHoard::changeCollectStatus() {
+    collectStatus = !collectStatus;
 }
