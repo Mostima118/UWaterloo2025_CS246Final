@@ -37,7 +37,10 @@ void PlayerCharacter::setDef(int defChange) {
 }
 
 void PlayerCharacter::usePotion(string potionType) {
-    if (potionType == "RH") {
+    if (potionType == "null") {
+        return;
+    }
+    else if (potionType == "RH") {
         setHP(hp + 10);
     }
     else if (potionType = "BA") {
@@ -73,7 +76,7 @@ void PlayerCharacter::attackEffect(unique_ptr<Character> target) {
     if (target == nullptr) {
         return;
     }
-    
+
     int damage = target->calculateDamage(atk);
     if (target->getType() == "Halfling") { // if attacking a halfling might miss
         srand(time(0));
