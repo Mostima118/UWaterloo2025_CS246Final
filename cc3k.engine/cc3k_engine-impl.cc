@@ -376,7 +376,6 @@ void GameEngine::updateState() {
 //coloring not yet implemented, stats and action not yet implemented
 // render
 void GameEngine::render() const {
-    // Check this, if floorNum_ returns the actual floor number
     const auto& fd = floors_[floorNum_];
     const auto& map = fd.map;
 
@@ -409,14 +408,13 @@ void GameEngine::render() const {
 
     // Game stats
     std::cout << "\nRace: " << player_->getRaceCode()
-              << "   Gold: " << playerGold_
+              << "   Gold: " << player_->getGold()
               // Not exactly the correct position, might have to revise this
-              << "   Floor: " << floorNum_ + 1
+              << "   Floor: " << floorNum_
               << "\n" << "HP: " << player_->getHP()
               << "\n" << "Atk: " << player_->getAtk()
               << "\n" << "Def: " << player_->getDef()
               << "\n" << "Action: " << player_->getActionLog()
-              // Might want to modify the above player function name based on the player class
               << std::endl;
 }
 
