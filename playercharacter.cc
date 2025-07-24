@@ -24,6 +24,6 @@ export class PlayerCharacter : public Character {
 
     virtual int calculateScore() const;
     virtual void attackEffect(std::unique_ptr<Character> target) override;
-    virtual void specialAbility() override;
+    //virtual void specialAbility() override;
 
 };

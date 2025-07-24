@@ -103,6 +103,21 @@ bool FloorGenerator::hasPresetEntites() const {
     return false;
 }
 
+Position FloorGenerator::findPresetStairs() {
+    int h = map_.size();
+    int w = map_[0].size();
+    for (int y= 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            char c = map_[y][x];
+            if (c == '\\') {
+                Position p{x, y};
+                return p;
+            }
+        }
+    }
+    return Position{0, 0};
+}
+
 std::unique_ptr<PlayerCharacter> FloorGenerator::spawnPresetPlayer() {
     int h = map_.size();
     int w = map_[0].size();
@@ -112,10 +127,11 @@ std::unique_ptr<PlayerCharacter> FloorGenerator::spawnPresetPlayer() {
             if (c == '@') {
                 auto p = PlayerFactory::createPlayer("s"); // default just make shade
                 p->setPosition(x, y);
+                return p;
             }
         }
     }
-    return p;
+    return nullptr;
 }
 
 

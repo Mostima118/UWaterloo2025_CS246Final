@@ -34,6 +34,8 @@ private:
     int floorNum_;
     bool gameOver_;
 
+    bool isPreset;
+
     CommandInterp interpreter_;
     FloorGenerator floorGen_;
 

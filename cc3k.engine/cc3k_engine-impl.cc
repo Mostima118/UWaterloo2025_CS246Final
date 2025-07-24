@@ -22,7 +22,8 @@ GameEngine::GameEngine(std::string layoutFile, unsigned seed)
       floorNum_{1},
       //playerGold_{0},
       enhancementsEnabled_{false},   
-      gameOver_{false}               
+      gameOver_{false}    
+      isPreset{false};           
 {}
 void GameEngine::spawnPlayer(FloorData &fd) {
     int h = fd.map.size(), w = fd.map[0].size();
@@ -43,12 +44,13 @@ void GameEngine::run() {
         selectRace(); floors_.clear(); floorNum_=1;
         //no longer generate floor 1 info
         preGenerateFloors();
-
-        spawnPlayer(floors_[0]);
-        {
-            auto &fd0 = floors_[0];
-            fd0.items   = floorGen_.spawnItems(seed_ + 0);
-            fd0.enemies = floorGen_.spawnEnemies(seed_ + 0);
+        if (!isPreset) {
+            spawnPlayer(floors_[0]);
+            {
+                auto &fd0 = floors_[0];
+                fd0.items   = floorGen_.spawnItems(seed_ + 0);
+                fd0.enemies = floorGen_.spawnEnemies(seed_ + 0);
+            }
         }
         // place player on first floor, not on stairs
 
@@ -84,45 +86,61 @@ void GameEngine::selectRace() {
 
 void GameEngine::preGenerateFloors() {
     Position commonStair;
+    bool hasTemplate = false;
     for (int i = 0; i < 5; ++i) {
+        
         floorGen_.generateRandomFloor(seed_ + i);
         FloorData fd;
-        fd.map = floorGen_.getMap();
-        int h = fd.map.size(), w = fd.map[0].size();
-        std::srand(seed_ + i);
-        // identify chambers once per floor
-        fd.chambers = floorGen_.identifyChambers(fd.map);
-        if (i == 0) {
-            // 1) Place PC first in a random chamber
-            spawnPlayer(fd);
-            auto pcPos = player_->getPosition();
-            // find chamber index of PC
-            int pcCh = -1;
-            for (int ci = 0; ci < (int)fd.chambers.size(); ++ci) {
-                for (auto &p : fd.chambers[ci]) {
-                    if (p == pcPos) { pcCh = ci; break; }
+        if(floorGen_.hasPresetEntities()) {
+            isPreset = true;
+            player_ = floorGen_.spawnPresetPlayer();
+            fd.enemies = floorGen_.spawnPresetEnemies();
+            fd.items = floorGen_.spawnPresetItems();
+            fd.stair = floorGen_.findPresetStairs();
+            fd.map = floorGen_.getMap();
+            fd.chambers = floorGen_.identifyChamberes(fd.map);
+
+        } else {
+            fd.map = floorGen_.getMap();
+            int h = fd.map.size(), w = fd.map[0].size();
+            std::srand(seed_ + i);
+            // identify chambers once per floor
+            fd.chambers = floorGen_.identifyChambers(fd.map);
+            if (i == 0) {
+                // 1) Place PC first in a random chamber
+                spawnPlayer(fd);
+                auto pcPos = player_->getPosition();
+                // find chamber index of PC
+                int pcCh = -1;
+                for (int ci = 0; ci < (int)fd.chambers.size(); ++ci) {
+                    for (auto &p : fd.chambers[ci]) {
+                        if (p == pcPos) { pcCh = ci; break; }
+                    }
+                    if (pcCh >= 0) break;
                 }
-                if (pcCh >= 0) break;
+                // 2) Choose stair in any other chamber
+                int sx, sy;
+                int chCount = fd.chambers.size();
+                // --- changed: replaced do/while(false) with proper loop to avoid single iteration ---
+                int targetCh;
+                do {
+                    targetCh = std::rand() % chCount;
+                } while (targetCh == pcCh); // ensure targetCh != pcCh
+                int idx = std::rand() % fd.chambers[targetCh].size();
+                sx = fd.chambers[targetCh][idx].x;
+                sy = fd.chambers[targetCh][idx].y;
+                commonStair = { sx, sy };
             }
-            // 2) Choose stair in any other chamber
-            int sx, sy;
-            int chCount = fd.chambers.size();
-            // --- changed: replaced do/while(false) with proper loop to avoid single iteration ---
-            int targetCh;
-            do {
-                targetCh = std::rand() % chCount;
-            } while (targetCh == pcCh); // ensure targetCh != pcCh
-            int idx = std::rand() % fd.chambers[targetCh].size();
-            sx = fd.chambers[targetCh][idx].x;
-            sy = fd.chambers[targetCh][idx].y;
-            commonStair = { sx, sy };
+            fd.stair = commonStair;
+            fd.map[commonStair.y][commonStair.x] = '/';
+            fd.items   = floorGen_.spawnItems(seed_ + i);
+            fd.enemies = floorGen_.spawnEnemies(seed_ + i);
+        
         }
-        fd.stair = commonStair;
-        fd.map[commonStair.y][commonStair.x] = '/';
-        fd.items   = floorGen_.spawnItems(seed_ + i);
-        fd.enemies = floorGen_.spawnEnemies(seed_ + i);
         floors_.push_back(std::move(fd));
+        
     }
+    
 }
 
 Character* GameEngine::getTargetCharacter(Command cmd) {
@@ -146,6 +164,7 @@ Character* GameEngine::getTargetCharacter(Command cmd) {
 
     for (auto &e : fd.enemies) {
         if (e->isAlive() && e->getPosition() == targetPos) {
+            // CHANGE TO -> IF WRONG
             return e.get();  
         }
     }
@@ -173,7 +192,7 @@ std::string GameEngine::getTargetPotion(Command cmd) {
 
     for (auto &e : fd.items) {
         if (e->isPotion() && e->getPosition() == targetPos) {
-            return e.use();  
+            return e->use();  
         }
     }
 
@@ -233,38 +252,53 @@ bool GameEngine::isValidMove(Command cmd) {
     if (fd.map[pos.y][pos.x] != 'G') return true;
     return false;
 }
+
 void GameEngine::handleCommand(Command cmd) {
-    auto &fd = floors_[floorNum_ - 1];
-    
+    auto &fd = floors[floorNum - 1];
+
     // Movement commands
     if ((cmd >= Command::MoveNorth && cmd <= Command::MoveSW) && isValidMove(cmd)) {
         switch (cmd) {
-            case Command::MoveNorth: player_->move(0, -1); break;
-            case Command::MoveSouth: player_->move(0, 1);  break;
-            case Command::MoveEast:  player_->move(1, 0);  break;
-            case Command::MoveWest:  player_->move(-1, 0); break;
-            case Command::MoveNE:    player_->move(1, -1); break;
-            case Command::MoveNW:    player_->move(-1, -1);break;
-            case Command::MoveSE:    player_->move(1, 1);  break;
-            case Command::MoveSW:    player_->move(-1, 1);  break;
+            case Command::MoveNorth: player->move(0, -1); break;
+            case Command::MoveSouth: player->move(0, 1);  break;
+            case Command::MoveEast:  player->move(1, 0);  break;
+            case Command::MoveWest:  player->move(-1, 0); break;
+            case Command::MoveNE:    player->move(1, -1); break;
+            case Command::MoveNW:    player->move(-1, -1);break;
+            case Command::MoveSE:    player->move(1, 1);  break;
+            case Command::MoveSW:    player->move(-1, 1); break;
             default: break;
         }
+
         // After moving, check for stairs
-        Position newPos = player_->getPosition();
+        Position newPos = player->getPosition();
         if (fd.map[newPos.y][newPos.x] == '/') {
-            if (floorNum_ < (int)floors_.size()) {
+            if (floorNum < (int)floors.size()) {
                 // go to next floor
-                ++floorNum_;
-                auto &newFd = floors_[floorNum_ - 1];
+                ++floorNum;
+                auto &newFd = floors[floorNum - 1];
                 // place player around the new floor's stair
-                Position spawn = floorGen_.getRandomFreeNeighbor(newFd.map, newFd.stair);
-                player_->setPosition(spawn);
-                player_->resetPotion();
+                Position spawn = floorGen.getRandomFreeNeighbor(newFd.map, newFd.stair);
+                player->setPosition(spawn);
+                player->resetPotion();
             }
         }
         return;
     }
+
+    // Attack commands
+    if (cmd >= Command::AttackNorth && cmd <= Command::AttackSW) {
+        player->attack(getTargetCharacter(cmd));
+        return;
+    }
+
+    // Use Potion commands
+    if (cmd >= Command::UsePotionNorth && cmd <= Command::UsePotionSW) {
+        player_->usePotion(getTargetPotion(cmd));
+        return;
+    }
 }
+
 //enemy retaliation, move enemy, clean up ... etc
 void GameEngine::updateState() {
     // 1) Get PC info after player input    
