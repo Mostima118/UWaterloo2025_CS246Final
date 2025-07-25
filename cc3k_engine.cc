@@ -41,7 +41,7 @@ private:
     bool isValidMove(Command cmd);
 
     void spawnPlayer(FloorData& fd);
-
+    void updatePlayer();
 
 
     std::string layoutFile_;
@@ -71,7 +71,7 @@ private:
 
     void startNewTurn();
     void logAction(const std::string &msg);
-    const std::vector<std::string> &getRecentTurnLog() const;
+    std::string getRecentTurnLog() const;
 };
 
 }
