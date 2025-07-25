@@ -18,7 +18,7 @@ using namespace std;
 
 unique_ptr<Enemy> EnemyFactory::createRandomEnemy() {
     //unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
-    srand(time(0));
+    
     int whichEnemy = rand() % 18; // get a number from 0 to 17
     cout<<"created:"<<whichEnemy<<endl;
     if (whichEnemy < 4) { // if 0 to 3 (i.e. a 4/18 chance) spawn a human

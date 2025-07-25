@@ -13,7 +13,7 @@ void Goblin::attackEffect(Character* target) {
     int damage = target->calculateDamage(atk);
     if (target->getType() == "Halfling") { // if attacking a halfling might miss
         //unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
-        srand(time(0));
+        //srand(time(0));
         int miss = rand() % 2;
         if (miss == 0) {
             return;

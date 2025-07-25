@@ -31,7 +31,7 @@ void Enemy::attackEffect(Character* target) {
     }
     
     //unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
-    srand(time(0));
+    //srand(time(0));
     int miss = rand() % 2;
     if (miss == 0) { // only hits 50% of the time
         int damage = target->calculateDamage(atk);
