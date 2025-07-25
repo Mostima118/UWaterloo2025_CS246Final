@@ -496,15 +496,16 @@ void GameEngine::handleCommand(Command cmd) {
     // Attack commands
     if (cmd >= Command::AttackNorth && cmd <= Command::AttackSW) {
         int result = player_->attackEffect(getTargetCharacter(cmd));
-        if(getTargetCharacter(cmd) == nullptr) {
+        Enemy* target = getTargetCharacter(cmd);
+        if(!target) {
             logAction("Player attacked but no target is found ");
         }else {
             int damage;
             if (result == 1) damage = 0;
-            else damage = getTargetCharacter(cmd)->calculateDamage(player_->getAtk());
+            else damage = target->calculateDamage(player_->getAtk());
 
-            if (damage == 0) logAction("Player attempted to attack " + getTargetCharacter(cmd)->getType() + " but missed.");
-            else logAction("Player attacked " + getTargetCharacter(cmd)->getType() + " and dealt " + std::to_string(damage) + " damage.");
+            if (damage == 0) logAction("Player attempted to attack " + target->getType() + " but missed.");
+            else logAction("Player attacked " + target->getType() + " and dealt " + std::to_string(damage) + " damage.");
         }
         
         return;
@@ -554,14 +555,26 @@ void GameEngine::updateState() {
             }
             if ((dx <= 1 && dy <= 1) && (dx != 0 || dy != 0) && e->isAlive()) {
                 if (e->getType() != "Merchant" || Enemy::isHostile()) {
-                    e->attackEffect(player_.get());
-                    int damage = player_->calculateDamage(e->getAtk());
-                    logAction(e->getType() + " attacked PC and dealt " + std::to_string(damage) + " damage.");
+
+                    int result = e->attackEffect(player_.get());
+                    int damage;
+                    if (result == 1) damage = 0;
+                    else if (result == 0) damage = player_->calculateDamage(e->getAtk());
+                    else damage = 2 * player_->calculateDamage(e->getAtk());
+
+                    if (damage == 0) logAction(e->getType() + " attempted to attack PC but missed.");
+                    else logAction(e->getType() + " attacked PC and dealt " + std::to_string(damage) + " damage.");
+
                 }
             }else if(e->getType() == "Dragon" && (ddx <= 1 && ddy <= 1) && (ddx != 0 || ddy != 0) && e->isAlive()) {
-                e->attackEffect(player_.get());
-                int damage = player_->calculateDamage(e->getAtk());
-                logAction(e->getType() + " attacked PC and dealt " + std::to_string(damage) + " damage.");
+                    
+                    int result = e->attackEffect(player_.get());
+                    int damage;
+                    if (result == 1) damage = 0;
+                    else damage = player_->calculateDamage(e->getAtk());
+
+                    if (damage == 0) logAction(e->getType() + " attempted to attack PC but missed.");
+                    else logAction(e->getType() + " attacked PC and dealt " + std::to_string(damage) + " damage.");
             }
         }
         
