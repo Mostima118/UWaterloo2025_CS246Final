@@ -42,6 +42,7 @@ Command CommandInterp::parse(const std::string& cmd) const {
     if (cmd == "toggle_enhancements")         return Command::ToggleEnhancements;
     if (cmd == "q" || cmd == "quit")        return Command::Quit;
     if (cmd == "r" || cmd == "restart")     return Command::Restart;
+    if (cmd == "f" || cmd == "freeze")     return Command::Freeze;
     return Command::Unknown;
 }
 

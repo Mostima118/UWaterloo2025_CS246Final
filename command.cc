@@ -18,7 +18,9 @@ export enum class Command {
     // Control
     Quit, Restart,
     ToggleEnhancements,
-    Unknown
+    Unknown,
+    // Freeze
+    Freeze
 };
 export class CommandInterp{
 public:

@@ -1,4 +1,4 @@
- module engine;
+module engine;
 import <iostream>;
 import <string>;
 import <vector>;
@@ -34,9 +34,35 @@ GameEngine::GameEngine(std::string layoutFile, unsigned seed)
       enhancementsEnabled_{false},   
       gameOver_{false},    
       isPreset{false},
-      isStandingOnDH{false}           
+      isStandingOnDH{false},
+      isFreeze{false}           
 {}
+void GameEngine::detectNearbyPotions() {
+    auto &fd = floors_[floorNum_ - 1];
+    Position pc = player_->getPosition();
 
+    for (auto &it : fd.items) {
+        if (!it->isPotion()) continue;              // skip non‑potions
+
+        Position ip = it->getPosition();
+        int dx = std::abs(ip.x - pc.x);
+        int dy = std::abs(ip.y - pc.y);
+
+        // within 1‑tile radius (including diagonals)
+        if (dx <= 1 && dy <= 1) {
+            // downcast to Potion so we can check isSeen()/use()
+            
+              // should never happen if your factory is correct
+            
+            if (it->isSeen()) {
+                logAction("sees one" + it->use() + "potion ");
+                
+            } else {
+                logAction("sees one unknown potion ");
+            }
+        }
+    }
+}
 void GameEngine::startNewTurn() {
     actionLog_.emplace_back();         // push an empty vector<string>
 }
@@ -59,21 +85,14 @@ std::string GameEngine::getRecentTurnLog() const {
     return combined;
 }
 
-/*
-std::string GameEngine::getRecentActionLog() const {
-    if (actionLog_.empty()) return "No actions yet.";
-    return actionLog_.back();  // or return all if needed
-}
-*/
-
 void GameEngine::spawnPlayer(FloorData &fd) {
     // 1) Choose a random chamber
     int chIdx = std::rand() % fd.chambers.size();
     auto &tiles = fd.chambers[chIdx].tiles;
-    std::cout<<"1 rand"<<std::endl;
+
     // 2) Choose a random tile within that chamber
     auto &spawnPos = tiles[ std::rand() % tiles.size() ];
-    std::cout<<"2 rand"<<std::endl;
+
     // 3) Create player and set its position
     player_ = PlayerFactory::createPlayer(raceCode_);
     
@@ -136,31 +155,14 @@ void GameEngine::run() {
         selectRace(); floors_.clear(); floorNum_=1;
         
         //no longer generate floor 1 info
+        startNewTurn();
         preGenerateFloors();
-        std::cout<<"generated floors"<<std::endl;
-        /*
-        if (!isPreset) {
-            spawnPlayer(floors_[0]);
-            {
-                auto &fd0 = floors_[0];
-                fd0.items   = floorGen_.spawnItems(seed_ + 0);
-                fd0.enemies = floorGen_.spawnEnemies(seed_ + 0, fd0.items);
-            }
-            std::cout<<"right before set player on map"<<std::endl;
-            setTile(player_->getPosition().x, player_->getPosition().y, '@');
-                
-            std::cout<<"set player pos on map"<<std::endl;
-        }*/
-        // place player on first floor, not on stairs
+
 
         // MOVE RANDOM PLAYER GENERATION TO ALSO BE IN preGenerateFloors()
-        startNewTurn();
+        
         render();
-        while (true) {
-            
-            std::cout<<"got to render ahsudihwauohsoidhwa"<<std::endl;
-            
-            
+        while (true) {     
             if(processInput()) break; //input processed
             updateState(); 
             render();
@@ -204,39 +206,25 @@ void GameEngine::preGenerateFloors() {
     Position commonStair;
     
     for (int i = 0; i < 5; ++i) {
-        //std::cout<<"got to loop"<<i<<std::endl;
+
         floorGen_.generateRandomFloor(seed_ + i, layoutFile_);
-        //std::cout<<"called generateRandomFloor"<<std::endl;
+
         FloorData fd;
         if(floorGen_.hasPresetEntities()) {
-            //std::cout << "have preset entities"<< std::endl;
             isPreset = true;
-            player_ = floorGen_.spawnPresetPlayer(raceCode_);
-            
+            player_ = floorGen_.spawnPresetPlayer(raceCode_);         
             fd.enemies = floorGen_.spawnPresetEnemies();
-           
-            std::cout << "spawned enemies" << std::endl;
             fd.items = floorGen_.spawnPresetItems();
-            std::cout << "spawned items" << std::endl;
-            fd.stair = floorGen_.findPresetStairs();
-            std::cout << "spawned stairs" << std::endl;
+            fd.stair = floorGen_.findPresetStairs(); 
             fd.map = floorGen_.getMap();
             fd.chambers = floorGen_.identifyChambers();
-
         } else {
-            std::cout << "no preset entities"<< std::endl;
             fd.map = floorGen_.getMap();
-           
-            //std::srand(seed_ + i);
             // identify chambers once per floor
             fd.chambers = floorGen_.identifyChambers();
             if (i == 0) {
                 // 1) Place PC first in a random chamber
-                std::cout<<"before spawn player"<<std::endl;
                 spawnPlayer(fd);
-                std::cout<<"successfullt spawned player"<<std::endl;
-                
-                
                 auto pcPos = player_->getPosition();
                 // find chamber index of PC
                 int pcCh = -1;
@@ -245,12 +233,11 @@ void GameEngine::preGenerateFloors() {
                         if (p == pcPos) { pcCh = ci; break; }
                     }
                     if (pcCh >= 0) break;
-                }
-                std::cout<<"pc chamber"<<pcCh<<std::endl;
+                }  
                 // 2) Choose stair in any other chamber
                 int sx, sy;
                 int chCount = fd.chambers.size();
-                std::cout<<"chamber size"<<chCount<<std::endl;
+ 
                 // --- changed: replaced do/while(false) with proper loop to avoid single iteration ---
                 int targetCh;
                 do {
@@ -258,30 +245,29 @@ void GameEngine::preGenerateFloors() {
                     targetCh = std::rand() % chCount;
                     
                 } while (targetCh == pcCh); // ensure targetCh != pcCh
-                std::cout<<"target chamber"<<targetCh<<std::endl;
+ 
                 int idx = std::rand() % fd.chambers[targetCh].tiles.size();
                 sx = fd.chambers[targetCh].tiles[idx].x;
                 sy = fd.chambers[targetCh].tiles[idx].y;
                 commonStair.x = sx;
                 commonStair.y = sy;
-                std::cout<<"stair cord: ("<<commonStair.x << "," <<commonStair.y << ")" << std::endl;
+
             }
             
             fd.stair = commonStair;
             floorGen_.setTile(commonStair.x, commonStair.y, '\\');
-            std::cout << "success set tile"<< std::endl;
+
             fd.items   = floorGen_.spawnItems(seed_ + i);
             fd.enemies = floorGen_.spawnEnemies(seed_ + i, fd.items);
             if(i == 0) {
                 fd.map = floorGen_.getMap();
                 fd.map[player_->getPosition().y][player_->getPosition().x] = '@';
-                std::cout<<"success settile pc"<<std::endl;
+  
             }else {
                 fd.map = floorGen_.getMap();
             }
             
-            std::cout << "success set map"<< std::endl;
-            //fd.map[commonStair.y][commonStair.x] = '\\';
+
         }
         floors_.push_back(std::move(fd));
         
@@ -362,6 +348,7 @@ bool GameEngine::processInput() {
         c == Command::SelectGoblin){
         std::cout<<"Cannot change race mid-game\n"; return false;
     }
+    
     handleCommand(c); return false;
 }
 
@@ -387,19 +374,15 @@ bool GameEngine::isValidMove(Command cmd) {
         default: break;
     }
     if (fd.map[pos.y][pos.x] == '.') {
-        //std::cout<<"true for ."<<std::endl;
         return true;
     } 
     if (fd.map[pos.y][pos.x] == '+') {
-        //std::cout<<"true for +"<<std::endl;
         return true;
     }
     if (fd.map[pos.y][pos.x] == '#') {
-       // std::cout<<"true for #"<<std::endl;
         return true;
     }
     if (fd.map[pos.y][pos.x] == '\\') {
-       // std::cout<<"true for /"<<std::endl;
         return true;
     }
     
@@ -409,7 +392,6 @@ bool GameEngine::isValidMove(Command cmd) {
         //canCollect don't run if e is not DH
         if (e->isDragonHoard() && !(e->canCollect()) && e->getPosition() == pos) {
             e->changeStatus(); //change to being stepped on
-            std::cout<<"true for DH"<<std::endl;
             return true;             
         }
     }
@@ -420,7 +402,11 @@ bool GameEngine::isValidMove(Command cmd) {
 
 void GameEngine::handleCommand(Command cmd) {
     auto &fd = floors_[floorNum_ - 1];
-
+    if(cmd == Command::Freeze) {
+        isFreeze = !isFreeze;
+        logAction("Freezed. You can now move at will.");
+        return;
+    }
     // Movement commands
     if ((cmd >= Command::MoveNorth && cmd <= Command::MoveSW) && isValidMove(cmd)) {
         int dx, dy;
@@ -438,16 +424,13 @@ void GameEngine::handleCommand(Command cmd) {
         Position oldPos = player_->getPosition();
         
         if(baseMap_[oldPos.y][oldPos.x] == '#') {
-            std::cout<<"default #"<<std::endl;
             setTile(oldPos.x, oldPos.y, '#'); // clear old position
         }else if(baseMap_[oldPos.y][oldPos.x] == '+') {
-            std::cout<<"default +"<<std::endl;
             setTile(oldPos.x, oldPos.y, '+'); // clear old position
         }else if(isStandingOnDH) {
             setTile(oldPos.x, oldPos.y, 'G');
             isStandingOnDH = false;
         }else {
-            std::cout<<"default ."<<std::endl;
             setTile(oldPos.x, oldPos.y, '.'); // clear old position
         }
         
@@ -455,7 +438,7 @@ void GameEngine::handleCommand(Command cmd) {
         // Move player
         
         player_->setPosition( player_->getPosition().x + dx, player_->getPosition().y + dy );
-        
+        detectNearbyPotions();
         // After moving, check for stairs
         Position newPos = player_->getPosition();
         //actionLog_.push_back("Player moved to (" +newPos.x +"," + newPos.y+")");
@@ -466,36 +449,37 @@ void GameEngine::handleCommand(Command cmd) {
                 updatePlayer();
                 logAction("Moved to floor" + std::to_string(floorNum_));
             }else if(floorNum_ >= (int)floors_.size()) {
-                std::cout<<"got to here"<<std::endl;
                 gameOver_ = true;
                 setTile(newPos.x, newPos.y, '@');
                 logAction("Congrats! Got to the top!");
             }
         }else {
-            for (auto it = fd.items.begin(); it != fd.items.end();) {
+            for (auto it = fd.items.begin(); it != fd.items.end(); ) {
                 if ((*it)->getPosition() == player_->getPosition()) {
-                    //dragonHoard
-                    if (!((*it)->isPotion()) && ((*it)->isDragonHoard()&&(*it)->canCollect())) {
-                        player_->addGold((*it)->getValue());
-                        //setTile( (*it)->getPosition().x, (*it)->getPosition().y, '.' ); // calls setTile with '.' char
-                        it = fd.items.erase(it); 
-                        logAction("Picked up dragon hoard ");
-                    }else if(!((*it)->isPotion())&&(*it)->isDragonHoard()) {
-                        //step on dh no pick up
-                        isStandingOnDH = true;
-                        //setTile( (*it)->getPosition().x, (*it)->getPosition().y, '.' );
-                        logAction("Currently standing on dragon hoard ");
-                    }else if(!((*it)->isPotion())) {
-                        //regular gold
-                        player_->addGold((*it)->getValue());                        
-                        logAction("Picked up " + std::to_string((*it)->getValue()) + "Gold " );
-                        it = fd.items.erase(it);
+                    if (!(*it)->isPotion()) {
+                        if ((*it)->isDragonHoard()) {
+                            if ((*it)->canCollect()) {
+                                player_->addGold((*it)->getValue());
+                                logAction("Picked up dragon hoard ");
+                                it = fd.items.erase(it); // erase and move to next
+                                continue;
+                            } else {
+                                isStandingOnDH = true;
+                                logAction("Currently standing on dragon hoard ");
+                                // don't erase, just move on
+                            }
+                        } else {
+                            // regular gold
+                            player_->addGold((*it)->getValue());
+                            logAction("Picked up " + std::to_string((*it)->getValue()) + "Gold ");
+                            it = fd.items.erase(it);
+                            continue;
+                        }
                     }
-                } else {
-                    ++it;
                 }
+                ++it;
             }
-            setTile(newPos.x, newPos.y, '@'); // mark new position
+            setTile(newPos.x, newPos.y, '@');
         }
         return;
     }
@@ -519,6 +503,7 @@ void GameEngine::handleCommand(Command cmd) {
         if (potion) {
             potion->See();
             player_->usePotion(potion->use());
+            logAction("PC used " + potion->use() + " potion");
             Position p = potion->getPosition();
             setTile(p.x, p.y, '.');
 
@@ -541,58 +526,60 @@ void GameEngine::updateState() {
 
     auto pos = player_->getPosition();
     auto &fd = floors_[floorNum_ - 1];
-
-    // 2) Enemy retaliation: any adjacent, alive enemy attacks the player
-    for (auto &e : fd.enemies) {
-        Position ep = e->getPosition();
-        int dx = std::abs(ep.x - pos.x);
-        int dy = std::abs(ep.y - pos.y);
-        if ((dx <= 1 && dy <= 1) && (dx != 0 || dy != 0) && e->isAlive()) {
-            if (e->getType() != "Merchant" || Enemy::isHostile()) {
-                e->attackEffect(player_.get());
-                int damage = player_->calculateDamage(e->getAtk());
-                logAction(e->getType() + " attacked PC and dealt " + std::to_string(damage) + " damage.");
+    if(isFreeze) {
+    }else {
+        // 2) Enemy retaliation: any adjacent, alive enemy attacks the player
+        for (auto &e : fd.enemies) {
+            Position ep = e->getPosition();
+            int dx = std::abs(ep.x - pos.x);
+            int dy = std::abs(ep.y - pos.y);
+            if ((dx <= 1 && dy <= 1) && (dx != 0 || dy != 0) && e->isAlive()) {
+                if (e->getType() != "Merchant" || Enemy::isHostile()) {
+                    e->attackEffect(player_.get());
+                    int damage = player_->calculateDamage(e->getAtk());
+                    logAction(e->getType() + " attacked PC and dealt " + std::to_string(damage) + " damage.");
+                }
             }
         }
-    }
+        
+        // 3) Move all non-dragon enemies, one pass row-by-row
+        auto &enemies = fd.enemies;
+        std::vector<size_t> order(enemies.size());
+        std::iota(order.begin(), order.end(), 0);
+        std::sort(order.begin(), order.end(), [&](size_t a, size_t b) {
+            auto pa = enemies[a]->getPosition();
+            auto pb = enemies[b]->getPosition();
+            return (pa.y < pb.y) || (pa.y == pb.y && pa.x < pb.x);
+        });
 
-    // 3) Move all non-dragon enemies, one pass row-by-row
-    auto &enemies = fd.enemies;
-    std::vector<size_t> order(enemies.size());
-    std::iota(order.begin(), order.end(), 0);
-    std::sort(order.begin(), order.end(), [&](size_t a, size_t b) {
-        auto pa = enemies[a]->getPosition();
-        auto pb = enemies[b]->getPosition();
-        return (pa.y < pb.y) || (pa.y == pb.y && pa.x < pb.x);
-    });
+        std::vector<bool> moved(enemies.size(), false);
+        static constexpr int dxs[8] = {0, 0, 1, -1, 1, 1, -1, -1};
+        static constexpr int dys[8] = {1, -1, 0, 0, 1, -1, 1, -1};
 
-    std::vector<bool> moved(enemies.size(), false);
-    static constexpr int dxs[8] = {0, 0, 1, -1, 1, 1, -1, -1};
-    static constexpr int dys[8] = {1, -1, 0, 0, 1, -1, 1, -1};
+        for (size_t idx : order) {
+            auto &e = enemies[idx];
+            if (e->getType() == "Dragon" || moved[idx]) continue;
 
-    for (size_t idx : order) {
-        auto &e = enemies[idx];
-        if (e->getType() == "Dragon" || moved[idx]) continue;
-
-        Position cur = e->getPosition();
-        std::vector<Position> cand;
-        for (int d = 0; d < 8; ++d) {
-            Position np{ cur.x + dxs[d], cur.y + dys[d] };
-            // bounds and walkable check
-            if (np.y < 0 || np.y >= (int)fd.map.size() ||
-                np.x < 0 || np.x >= (int)fd.map[0].size()) continue;
-            if (fd.map[np.y][np.x] != '.') continue;
-            
-            cand.push_back(np);
+            Position cur = e->getPosition();
+            std::vector<Position> cand;
+            for (int d = 0; d < 8; ++d) {
+                Position np{ cur.x + dxs[d], cur.y + dys[d] };
+                // bounds and walkable check
+                if (np.y < 0 || np.y >= (int)fd.map.size() ||
+                    np.x < 0 || np.x >= (int)fd.map[0].size()) continue;
+                if (fd.map[np.y][np.x] != '.') continue;
+                
+                cand.push_back(np);
+            }
+            if (cand.empty()) continue;
+            setTile(cur.x, cur.y, '.'); //return to '.'
+            Position dest = cand[std::rand() % cand.size()];
+            setTile(dest.x, dest.y, e->getSymbol()); //set to enemy symbol
+            e->setPosition(dest.x, dest.y);
+            moved[idx] = true;
         }
-        if (cand.empty()) continue;
-        setTile(cur.x, cur.y, '.'); //return to '.'
-        Position dest = cand[std::rand() % cand.size()];
-        setTile(dest.x, dest.y, e->getSymbol()); //set to enemy symbol
-        e->setPosition(dest.x, dest.y);
-        moved[idx] = true;
     }
-
+    
     // 4) Cleanup dead enemies & collect their gold
     for (auto it = fd.enemies.begin(); it != fd.enemies.end();) {
         if (!(*it)->isAlive()) {
@@ -609,6 +596,7 @@ void GameEngine::updateState() {
                         e->changeCollectStatus();
                     };
                 }
+                setTile((*it)->getPosition().x, (*it)->getPosition().y, '.');
                 logAction("Congrats! You defeated the dragon. Can collect hoard now ");
             }else if((*it)->getType()=="Merchant") {
                 logAction("You killed a merchant. Spawns 1 pile of gold ");

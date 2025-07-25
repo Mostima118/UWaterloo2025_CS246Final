@@ -30,6 +30,7 @@ public:
 
 private:
 //added
+    void detectNearbyPotions();
     std::vector<std::string> baseMap_;
     std::vector<std::vector<std::string>> actionLog_;
     std::string getRecentActionLog() const;
@@ -43,7 +44,7 @@ private:
     void spawnPlayer(FloorData& fd);
     void updatePlayer();
     
-
+    
     std::string layoutFile_;
     unsigned seed_;
     std::string raceCode_;
@@ -52,6 +53,7 @@ private:
     bool gameOver_;
     bool isPreset;
     bool isStandingOnDH;
+    bool isFreeze;
     CommandInterp interpreter_;
     FloorGenerator floorGen_;
 
