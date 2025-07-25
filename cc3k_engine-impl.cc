@@ -169,7 +169,7 @@ void GameEngine::preGenerateFloors() {
             std::cout << "no preset entities"<< std::endl;
             fd.map = floorGen_.getMap();
            
-            std::srand(seed_ + i);
+            //std::srand(seed_ + i);
             // identify chambers once per floor
             fd.chambers = floorGen_.identifyChambers();
             if (i == 0) {
