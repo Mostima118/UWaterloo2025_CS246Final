@@ -14,7 +14,7 @@ export class Enemy : public Character {
     virtual ~Enemy() = default;
     virtual int dropGold() const;
 
-    void attackEffect(Character* target);
+    int attackEffect(Character* target);
     
     static bool isHostile();
     static void setHostile(bool hostile);

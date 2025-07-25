@@ -34,7 +34,7 @@ export class Character {
    virtual void specialAbility();
 
    // take pointer so if target not found have null ptr and just do nothing
-   virtual void attackEffect(Character* target);
+   virtual int attackEffect(Character* target);
    //virtual void defenseEffect(Character &attacker); // not actually necessary? can just have effects in attack
 
 };

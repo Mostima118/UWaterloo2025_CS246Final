@@ -4,9 +4,9 @@ using namespace std;
 
 Orc::Orc(int hp, int atk, int def, char mapSymbol, std::string type) : Enemy{hp, atk, def, mapSymbol, type} {}
 
-void Orc::attackEffect(Character* target) {
+int Orc::attackEffect(Character* target) {
     if (target == nullptr) {
-        return;
+        return 1;
     }
     //unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
     //srand(time(0));
@@ -17,5 +17,8 @@ void Orc::attackEffect(Character* target) {
             damage = static_cast<int>(damage * 1.5);
         }
         target->setHP(target->getHP() - damage);
+        return 0;
     }
+
+    return 1;
 }

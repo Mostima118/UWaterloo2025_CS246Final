@@ -404,7 +404,12 @@ void GameEngine::handleCommand(Command cmd) {
     auto &fd = floors_[floorNum_ - 1];
     if(cmd == Command::Freeze) {
         isFreeze = !isFreeze;
-        logAction("Freezed. You can now move at will.");
+        if(isFreeze) {
+            logAction("Freeze! You can now move at will.");
+        }else {
+            logAction("Unfroze~ Back to normal.");
+        }
+
         return;
     }
     // Movement commands
@@ -434,6 +439,10 @@ void GameEngine::handleCommand(Command cmd) {
             setTile(oldPos.x, oldPos.y, '.'); // clear old position
         }
         
+        // FINISH
+        if (player_->getType() == "Troll") {
+
+        }
 
         // Move player
         
@@ -486,12 +495,16 @@ void GameEngine::handleCommand(Command cmd) {
 
     // Attack commands
     if (cmd >= Command::AttackNorth && cmd <= Command::AttackSW) {
-        player_->attackEffect(getTargetCharacter(cmd));
+        int result = player_->attackEffect(getTargetCharacter(cmd));
         if(getTargetCharacter(cmd) == nullptr) {
             logAction("Player attacked but no target is found ");
         }else {
-            int damage = getTargetCharacter(cmd)->calculateDamage(player_->getAtk());
-            logAction("Player attacked " + getTargetCharacter(cmd)->getType() + " and dealt " + std::to_string(damage) + " damage.");
+            int damage;
+            if (result == 1) damage = 0;
+            else damage = getTargetCharacter(cmd)->calculateDamage(player_->getAtk());
+
+            if (damage == 0) logAction("Player attempted to attack " + getTargetCharacter(cmd)->getType() + " but missed.");
+            else logAction("Player attacked " + getTargetCharacter(cmd)->getType() + " and dealt " + std::to_string(damage) + " damage.");
         }
         
         return;
@@ -533,12 +546,22 @@ void GameEngine::updateState() {
             Position ep = e->getPosition();
             int dx = std::abs(ep.x - pos.x);
             int dy = std::abs(ep.y - pos.y);
+            int ddx = 0;
+            int ddy = 0;
+            if(e->getType() == "Dragon") {
+                ddx = std::abs( e->getHoardPos().x - pos.x );
+                ddy = std::abs( e->getHoardPos().y - pos.y );
+            }
             if ((dx <= 1 && dy <= 1) && (dx != 0 || dy != 0) && e->isAlive()) {
                 if (e->getType() != "Merchant" || Enemy::isHostile()) {
                     e->attackEffect(player_.get());
                     int damage = player_->calculateDamage(e->getAtk());
                     logAction(e->getType() + " attacked PC and dealt " + std::to_string(damage) + " damage.");
                 }
+            }else if(e->getType() == "Dragon" && (ddx <= 1 && ddy <= 1) && (ddx != 0 || ddy != 0) && e->isAlive()) {
+                e->attackEffect(player_.get());
+                int damage = player_->calculateDamage(e->getAtk());
+                logAction(e->getType() + " attacked PC and dealt " + std::to_string(damage) + " damage.");
             }
         }
         

@@ -5,9 +5,9 @@ using namespace std;
 
 Goblin::Goblin(int hp, int maxHP, int atk, int def, char mapSymbol, string type, string race) : PlayerCharacter{hp, maxHP, atk, def, mapSymbol, type, race} {}
 
-void Goblin::attackEffect(Character* target) {
+int Goblin::attackEffect(Character* target) {
     if (target == nullptr) {
-        return;
+        return 1;
     }
 
     int damage = target->calculateDamage(atk);
@@ -16,7 +16,7 @@ void Goblin::attackEffect(Character* target) {
         //srand(time(0));
         int miss = rand() % 2;
         if (miss == 0) {
-            return;
+            return 1;
         }
     }
     target->setHP(target->getHP() - damage);
@@ -24,4 +24,5 @@ void Goblin::attackEffect(Character* target) {
     if (target->getHP() <= 0) { // target died from this attack
         addGold(5);
     }
+    return 0;
 }

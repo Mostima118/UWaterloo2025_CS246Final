@@ -25,9 +25,9 @@ int Enemy::dropGold() const {
     }
 }
 
-void Enemy::attackEffect(Character* target) {
+int Enemy::attackEffect(Character* target) {
     if (target == nullptr) {
-        return;
+        return 1;
     }
     
     //unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
@@ -36,7 +36,9 @@ void Enemy::attackEffect(Character* target) {
     if (miss == 0) { // only hits 50% of the time
         int damage = target->calculateDamage(atk);
         target->setHP(target->getHP() - damage);
+        return 0;
     }
+    return 1;
 }
 
 bool Enemy::isHostile() { 

@@ -72,9 +72,9 @@ int PlayerCharacter::calculateScore() const {
 
 
 // default behaviour, may be overriden by subclasses
-void PlayerCharacter::attackEffect(Character* target) {
+int PlayerCharacter::attackEffect(Character* target) {
     if (target == nullptr) {
-        return;
+        return 1;
     }
 
     int damage = target->calculateDamage(atk);
@@ -83,10 +83,11 @@ void PlayerCharacter::attackEffect(Character* target) {
         //srand(time(0));
         int miss = rand() % 2;
         if (miss == 0) {
-            return;
+            return 1;
         }
     }
     target->setHP(target->getHP() - damage);
+    return 0;
 }
 
 
