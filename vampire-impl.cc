@@ -5,6 +5,15 @@ using namespace std;
 // max hp of 0 meaning no max hp
 Vampire::Vampire(int hp, int maxHP, int atk, int def, char mapSymbol, string type, string race) : PlayerCharacter{hp, maxHP, atk, def, mapSymbol, type, race} {}
 
+void Vampire::setHP(int newHP) {
+    if (newHP < 0) {
+        hp = 0;
+    }
+    else {
+        hp = newHP;
+    }
+}
+
 int Vampire::attackEffect(Character* target) {
     if (target == nullptr) {
         return 1;

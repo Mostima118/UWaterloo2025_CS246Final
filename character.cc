@@ -25,7 +25,7 @@ export class Character {
    Position getPosition() const;
    bool isAlive() const;
 
-   void setHP(int newHP);
+   virtual void setHP(int newHP);
    void setPosition(int newX, int newY);
 
    int calculateDamage(int attackerAtk) const;
