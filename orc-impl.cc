@@ -8,10 +8,14 @@ void Orc::attackEffect(Character* target) {
     if (target == nullptr) {
         return;
     }
-
-    int damage = target->calculateDamage(atk);
-    if (target->getType() == "Goblin") {
-        damage = static_cast<int>(damage * 1.5);
+    //unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
+    srand(time(0));
+    int miss = rand() % 2;
+    if (miss == 0) { // only hits 50% of the time
+        int damage = target->calculateDamage(atk);
+        if (target->getType() == "Goblin") {
+            damage = static_cast<int>(damage * 1.5);
+        }
+        target->setHP(target->getHP() - damage);
     }
-    target->setHP(target->getHP() - damage);
 }
