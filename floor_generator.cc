@@ -35,6 +35,7 @@ public:
     std::vector<std::unique_ptr<Enemy>> spawnEnemies(unsigned seed, const std::vector<std::unique_ptr<Item>>& items);
 
     bool hasPresetEntities() const;
+    Position findPlayerPreset();
     Position findPresetStairs();
     std::unique_ptr<PlayerCharacter> spawnPresetPlayer();
     std::vector<std::unique_ptr<Enemy>> spawnPresetEnemies();

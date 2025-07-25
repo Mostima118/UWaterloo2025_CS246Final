@@ -131,6 +131,22 @@ Position FloorGenerator::findPresetStairs() {
     return Position{0, 0};
 }
 
+Position FloorGenerator::findPlayerPreset() {
+    int h = map_.size();
+    int w = map_[0].size();
+    for (int y= 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            char c = map_[y][x];
+            if (c == '@') {
+                Position p{x, y};
+                return p;
+            }
+        }
+    }
+    std::cout << "DID NOT FIND PLAYER" << std::endl;
+    return Position{0, 0};
+}
+
 std::unique_ptr<PlayerCharacter> FloorGenerator::spawnPresetPlayer() {
     int h = map_.size();
     int w = map_[0].size();

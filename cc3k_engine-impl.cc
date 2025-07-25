@@ -40,17 +40,25 @@ std::string GameEngine::getRecentActionLog() const {
     if (actionLog_.empty()) return "No actions yet.";
     return actionLog_.back();  // or return all if needed
 }
-void GameEngine::spawnPlayer(FloorData &fd) {
-    int h = fd.map.size(), w = fd.map[0].size();
-    int x, y;
-    do {
-        x = std::rand() % w;
-        y = std::rand() % h;
-    } while (fd.map[y][x] != '.');
-    player_ = PlayerFactory::createPlayer(raceCode_);
-    player_->setPosition(x, y);
-    std::cout<<"set player pos"<<std::endl;
 
+void GameEngine::spawnPlayer(FloorData &fd) {
+    // 1) Choose a random chamber
+    int chIdx = std::rand() % fd.chambers.size();
+    auto &tiles = fd.chambers[chIdx].tiles;
+    std::cout<<"1 rand"<<std::endl;
+    // 2) Choose a random tile within that chamber
+    auto &spawnPos = tiles[ std::rand() % tiles.size() ];
+    std::cout<<"2 rand"<<std::endl;
+    // 3) Create player and set its position
+    player_ = PlayerFactory::createPlayer(raceCode_);
+    player_->setPosition(spawnPos.x, spawnPos.y);
+
+    // 4) (Optional) mark the map so render() will show the '@' immediately
+    //fd.map[spawnPos.y][spawnPos.x] = '@';
+
+    std::cout 
+      << "spawnPlayer: placed player in chamber #" << chIdx 
+      << " at (" << spawnPos.x << "," << spawnPos.y << ")\n";
 }
 void GameEngine::setTile(int x, int y, char ch) {
     floors_[floorNum_ - 1].map[y][x] = ch;
@@ -64,6 +72,7 @@ void GameEngine::run() {
         //no longer generate floor 1 info
         preGenerateFloors();
         std::cout<<"generated floors"<<std::endl;
+        /*
         if (!isPreset) {
             spawnPlayer(floors_[0]);
             {
@@ -75,7 +84,7 @@ void GameEngine::run() {
             setTile(player_->getPosition().x, player_->getPosition().y, '@');
                 
             std::cout<<"set player pos on map"<<std::endl;
-        }
+        }*/
         // place player on first floor, not on stairs
 
         // MOVE RANDOM PLAYER GENERATION TO ALSO BE IN preGenerateFloors()
@@ -91,6 +100,15 @@ void GameEngine::run() {
         std::cout<<"Game over! Score: "<<calculateScore()<<"\n";
         std::cout<<"Play again? (y/n): "; std::string ans; std::getline(std::cin,ans);
         replay = !ans.empty()&&(ans[0]=='y'||ans[0]=='Y');
+        if (replay) {
+            gameOver_ = false;
+            if (player_->getType() == "Vampire") {
+                player_->setHP(50);
+            }
+            else {
+                player_->setHP(player_->getMaxHP());
+            }
+        }
     } while (replay);
 }
 
@@ -140,7 +158,11 @@ void GameEngine::preGenerateFloors() {
             fd.chambers = floorGen_.identifyChambers();
             if (i == 0) {
                 // 1) Place PC first in a random chamber
+                std::cout<<"before spawn player"<<std::endl;
                 spawnPlayer(fd);
+                std::cout<<"successfullt spawned player"<<std::endl;
+                fd.map[player_->getPosition().y][player_->getPosition().x] = '@';
+                std::cout<<"success settile"<<std::endl;
                 auto pcPos = player_->getPosition();
                 // find chamber index of PC
                 int pcCh = -1;
@@ -355,8 +377,15 @@ void GameEngine::handleCommand(Command cmd) {
                 ++floorNum_;
                 auto &newFd = floors_[floorNum_ - 1];
                 // place player around the new floor's stair
-                Position spawn = floorGen_.getRandomFreeNeighbor(newFd.map, newFd.stair);
-                player_->setPosition(spawn.x, spawn.y);
+                if (!isPreset) {
+                    // CHANGE TO SPAWN IN RANDOM CHAMBER NOT WITH STAIRS
+                    Position spawn = floorGen_.getRandomFreeNeighbor(newFd.map, newFd.stair);
+                    player_->setPosition(spawn.x, spawn.y);
+                }
+                else {
+                    Position spawn = floorGen_.findPlayerPreset();
+                    player_->setPosition(spawn.x, spawn.y);
+                }
 
                 player_->resetPotions();
             }else if(floorNum_ >= (int)floors_.size()) {
