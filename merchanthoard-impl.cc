@@ -22,3 +22,5 @@ void MerchantHoard::changeStatus() { return; }
 bool MerchantHoard::isDragonHoard() {
     return false;
 }
+
+void MerchantHoard::changeCollectStatus() {}

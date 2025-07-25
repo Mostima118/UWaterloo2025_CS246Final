@@ -37,7 +37,7 @@ public:
     bool hasPresetEntities() const;
     Position findPlayerPreset();
     Position findPresetStairs();
-    std::unique_ptr<PlayerCharacter> spawnPresetPlayer();
+    std::unique_ptr<PlayerCharacter> spawnPresetPlayer(std::string code);
     std::vector<std::unique_ptr<Enemy>> spawnPresetEnemies();
     std::vector<std::unique_ptr<Item>> spawnPresetItems();
 private:

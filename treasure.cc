@@ -31,6 +31,8 @@ public:
 
     virtual void changeStatus () override = 0;
 
+    virtual void changeCollectStatus () = 0;
+
     // Adds value to player; only implemented in leaf classes
     //  Returns the value of the gold
     virtual std::string use() override = 0;

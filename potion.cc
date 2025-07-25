@@ -45,6 +45,8 @@ public:
 
     void changeStatus() override;
 
+    void changeCollectStatus() override;
+
     // getType function returns the NUMBER correlated with the potion
     //  Ex. Restore Health (RH) is '0', Boost Atk (BA) is '1' ...
     char getType() override = 0;

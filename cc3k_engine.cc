@@ -42,7 +42,7 @@ private:
 
     void spawnPlayer(FloorData& fd);
     void updatePlayer();
-
+    
 
     std::string layoutFile_;
     unsigned seed_;
@@ -51,7 +51,7 @@ private:
     bool enhancementsEnabled_;
     bool gameOver_;
     bool isPreset;
-    
+    bool isStandingOnDH;
     CommandInterp interpreter_;
     FloorGenerator floorGen_;
 

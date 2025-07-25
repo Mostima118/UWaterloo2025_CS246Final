@@ -18,7 +18,7 @@ public:
     bool canCollect() override;
 
     // changeCollectStatus changes the collectStatus
-    void changeCollectStatus();
+    void changeCollectStatus() override;
 
     bool isDragonHoard() override;
     std::string use() override;

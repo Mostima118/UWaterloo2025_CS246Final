@@ -14,4 +14,5 @@ public:
     std::string use() override;
     void changeStatus() override;
     bool isDragonHoard() override;
+    void changeCollectStatus() override;
 };

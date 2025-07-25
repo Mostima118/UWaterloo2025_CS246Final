@@ -42,6 +42,8 @@ public:
 
     virtual void changeStatus () = 0;
 
+    virtual void changeCollectStatus () = 0;
+
     virtual void See() = 0;
 
     // Check if an item is a dragon hoard, defaulted to false

@@ -22,3 +22,5 @@ void SmallGold::changeStatus() { return; }
 bool SmallGold::isDragonHoard() {
     return false;
 }
+
+void SmallGold::changeCollectStatus() {}

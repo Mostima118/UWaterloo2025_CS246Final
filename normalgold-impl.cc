@@ -22,3 +22,5 @@ void NormalGold::changeStatus() { return; }
 bool NormalGold::isDragonHoard() {
     return false;
 }
+
+void NormalGold::changeCollectStatus() {}

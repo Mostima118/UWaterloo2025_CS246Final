@@ -153,14 +153,14 @@ Position FloorGenerator::findPlayerPreset() {
     return Position{0, 0};
 }
 
-std::unique_ptr<PlayerCharacter> FloorGenerator::spawnPresetPlayer() {
+std::unique_ptr<PlayerCharacter> FloorGenerator::spawnPresetPlayer(std::string code) {
     int h = map_.size();
     int w = map_[0].size();
     for (int y= 0; y < h; ++y) {
         for (int x = 0; x < w; ++x) {
             char c = map_[y][x];
             if (c == '@') {
-                auto p = PlayerFactory::createPlayer("s"); // default just make shade
+                auto p = PlayerFactory::createPlayer(code);
                 p->setPosition(x, y);
                 std::cout << "FOUND PLAYER" << std::endl;
                 return p;
