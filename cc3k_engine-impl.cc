@@ -439,10 +439,6 @@ void GameEngine::handleCommand(Command cmd) {
             setTile(oldPos.x, oldPos.y, '.'); // clear old position
         }
         
-        // FINISH
-        if (player_->getType() == "Troll") {
-
-        }
 
         // Move player
         
@@ -539,6 +535,11 @@ void GameEngine::updateState() {
     // 1) Get PC info after player input    
 
     auto pos = player_->getPosition();
+
+    if (player_->getRace() == "Troll") {
+        player_->specialAbility();
+    }
+
     auto &fd = floors_[floorNum_ - 1];
     if(isFreeze) {
     }else {
