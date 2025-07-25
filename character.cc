@@ -1,16 +1,12 @@
 export module character;
 import <string>;
 import <memory>;
+import position;
 
-
-struct Position {
-  int x, y;
-  Position(int x, int y): x{x}, y{y} {};
-};
 
 export class Character {
  protected:
-   int hp, maxHp, atk, def;
+   int hp, maxHP, atk, def;
    char mapSymbol;
    std::string type;
    Position pos;
@@ -34,7 +30,8 @@ export class Character {
 
    int calculateDamage(int attackerAtk) const;
    
-   virtual void applySpecialAbility() = 0;
+   // MAYBE NEED TO MAKE PURE VIRTUAL AGAIN LATER
+   virtual void specialAbility();
 
    // take pointer so if target not found have null ptr and just do nothing
    virtual void attackEffect(std::unique_ptr<Character> target);

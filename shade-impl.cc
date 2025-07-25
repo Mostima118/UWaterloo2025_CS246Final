@@ -1,7 +1,9 @@
 module shade;
 import <string>;
 
-Shade::Shade() : PlayerCharacter{125, 125, 25, 25, '@', "Player", "Shade"} {}
+using namespace std;
+
+Shade::Shade(int hp, int maxHP, int atk, int def, char mapSymbol, string type, string race) : PlayerCharacter{hp, maxHP, atk, def, mapSymbol, type, race} {}
 
 
 int Shade::calculateScore() const {

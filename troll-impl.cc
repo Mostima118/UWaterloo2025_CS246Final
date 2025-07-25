@@ -1,7 +1,9 @@
 module troll;
 import <string>;
 
-Troll::Troll() : PlayerCharacter{120, 120, 25, 15, '@', "Player", "Troll"} {}
+using namespace std;
+
+Troll::Troll(int hp, int maxHP, int atk, int def, char mapSymbol, string type, string race) : PlayerCharacter{hp, maxHP, atk, def, mapSymbol, type, race} {}
 
 void Troll::specialAbility() {
     setHP(getHP() + 5);

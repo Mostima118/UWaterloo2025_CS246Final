@@ -2,7 +2,7 @@ module orc;
 
 using namespace std;
 
-Orc::Orc() : Enemy{180, 30, 25, 'O', "Orc"} {}
+Orc::Orc(int hp, int atk, int def, char mapSymbol, std::string type) : Enemy{hp, atk, def, mapSymbol, type} {}
 
 void Orc::attackEffect(unique_ptr<Character> target) {
     if (target == nullptr) {

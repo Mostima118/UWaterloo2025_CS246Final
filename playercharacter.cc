@@ -23,7 +23,7 @@ export class PlayerCharacter : public Character {
     virtual void resetPotions();
 
     virtual int calculateScore() const;
-    virtual void attackEffect(std::unique_ptr<Character> target) override;
+    virtual void attackEffect(std::unique_ptr<Character> target);
     //virtual void specialAbility() override;
 
 };

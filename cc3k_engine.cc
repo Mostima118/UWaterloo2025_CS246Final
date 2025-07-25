@@ -5,20 +5,20 @@ import <memory>;
 import <cstdlib>;
 import command;
 import floor;
-import player;
+import playercharacter;
 import enemy;
 import item;
 
 namespace cc3k {
 
-struct Position { int x,y; };
-bool operator==(const Position& a, const Position& b) {}
+//struct Position { int x,y; };
+bool operator==(const Position& a, const Position& b);
 struct FloorData {
     std::vector<std::string> map;
-    Position upStair;
-    Position downStair;
+    Position stair;
     std::vector<std::unique_ptr<Item>> items;
     std::vector<std::unique_ptr<Enemy>> enemies;
+    std::vector<std::vector<Position>> chambers;  // CHANGED: store chambers here
 };
 
 export class GameEngine {
@@ -27,18 +27,20 @@ public:
     void run();
 
 private:
-
+    void spawnPlayer(FloorData& fd);
     std::string layoutFile_;
     unsigned seed_;
     std::string raceCode_;
     int floorNum_;
     bool gameOver_;
 
+    bool isPreset;
+
     CommandInterp interpreter_;
     FloorGenerator floorGen_;
 
-    std::unique_ptr<Player> player_;
-    int playerGold_;
+    std::unique_ptr<PlayerCharacter> player_;
+    //int playerGold_;
     bool enhancementsEnabled_;
 
     std::vector<FloorData> floors_;

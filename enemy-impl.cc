@@ -14,7 +14,7 @@ Enemy::Enemy(int hp, int atk, int def, char mapSymbol, string type) :
 int Enemy::dropGold() const {
     srand(time(0));
     int pileSize = rand() % 2;
-    if (pileSize = 0) {
+    if (pileSize == 0) {
         return 1;
     }
     else {

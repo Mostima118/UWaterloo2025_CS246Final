@@ -1,6 +1,6 @@
 module halfling;
 
-Halfling::Halfling() : Enemy{100, 15,20, 'L', "Halfling"} {}
+Halfling::Halfling(int hp, int atk, int def, char mapSymbol, std::string type) : Enemy{hp, atk, def, mapSymbol, type} {}
 
 /*
 void Halfling::defenseEffect(Character &attacker) {

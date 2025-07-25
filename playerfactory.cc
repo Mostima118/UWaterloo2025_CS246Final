@@ -5,5 +5,5 @@ import <string>;
 
 export class PlayerFactory {
  public:
-    static std::unique_pointer<Player> createPlayer(const std::string &race);
+    static std::unique_ptr<PlayerCharacter> createPlayer(const std::string &race);
 };

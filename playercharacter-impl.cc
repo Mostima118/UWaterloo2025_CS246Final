@@ -43,19 +43,19 @@ void PlayerCharacter::usePotion(string potionType) {
     else if (potionType == "RH") {
         setHP(hp + 10);
     }
-    else if (potionType = "BA") {
+    else if (potionType == "BA") {
         setAtk(5);
     }
-    else if (potionType = "BD") {
+    else if (potionType == "BD") {
         setDef(5);
     }
-    else if (potionType = "PH") {
+    else if (potionType == "PH") {
         setHP(hp - 10);
     }
-    else if (potionType = "WA") {
+    else if (potionType == "WA") {
         setAtk(-5);
     }
-    else if (potionType = "WD") {
+    else if (potionType == "WD") {
         setDef(-5);
     }
 }
@@ -89,4 +89,4 @@ void PlayerCharacter::attackEffect(unique_ptr<Character> target) {
 }
 
 
-void PlayerCharacter::specialAbility() {}
+//void PlayerCharacter::specialAbility() {}

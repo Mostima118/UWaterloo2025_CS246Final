@@ -10,7 +10,7 @@ import <string>;
 
 using namespace std;
 
-unique_ptr<Player> PlayerFactory::createPlayer(const string &race) {
+unique_ptr<PlayerCharacter> PlayerFactory::createPlayer(const string &race) {
     if (race == "s") {
         return make_unique<Shade>(125, 125, 25, 25, '@', "Player", "Shade");
     } else if (race == "d") {

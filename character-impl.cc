@@ -1,4 +1,4 @@
-module Character;
+module character;
 import <cmath>;
 
 using namespace std;
@@ -58,7 +58,7 @@ int Character::calculateDamage(int attackerAtk) const {
 
 // Default implementations
 
-void Character::applySpecialAbility() {}
+void Character::specialAbility() {}
 void Character::attackEffect(unique_ptr<Character> target) {}
 //void Character::defenseEffect(Character &attacker) {}
 

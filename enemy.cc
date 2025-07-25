@@ -1,6 +1,7 @@
 export module enemy;
 import character;
 import <string>;
+import <memory>;
 
 
 export class Enemy : public Character {
