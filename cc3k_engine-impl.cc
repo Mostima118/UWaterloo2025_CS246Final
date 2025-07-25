@@ -49,16 +49,21 @@ void GameEngine::spawnPlayer(FloorData &fd) {
     } while (fd.map[y][x] != '.');
     player_ = PlayerFactory::createPlayer(raceCode_);
     player_->setPosition(x, y);
+    std::cout<<"set player pos"<<std::endl;
+
 }
 void GameEngine::setTile(int x, int y, char ch) {
     floors_[floorNum_ - 1].map[y][x] = ch;
 }
 void GameEngine::run() {
+    gameOver_ = false;
     bool replay;
     do {
         selectRace(); floors_.clear(); floorNum_=1;
+        
         //no longer generate floor 1 info
         preGenerateFloors();
+        std::cout<<"generated floors"<<std::endl;
         if (!isPreset) {
             spawnPlayer(floors_[0]);
             {
@@ -66,6 +71,10 @@ void GameEngine::run() {
                 fd0.items   = floorGen_.spawnItems(seed_ + 0);
                 fd0.enemies = floorGen_.spawnEnemies(seed_ + 0, fd0.items);
             }
+            std::cout<<"right before set player on map"<<std::endl;
+            setTile(player_->getPosition().x, player_->getPosition().y, '@');
+                
+            std::cout<<"set player pos on map"<<std::endl;
         }
         // place player on first floor, not on stairs
 
@@ -73,9 +82,11 @@ void GameEngine::run() {
         
         
         while (true) {
+            std::cout<<"got to render"<<std::endl;
             render(); 
             if(processInput()) break; //input processed
             updateState(); 
+            if(gameOver_) break;
         }
         std::cout<<"Game over! Score: "<<calculateScore()<<"\n";
         std::cout<<"Play again? (y/n): "; std::string ans; std::getline(std::cin,ans);
@@ -103,7 +114,7 @@ void GameEngine::preGenerateFloors() {
     Position commonStair;
     
     for (int i = 0; i < 5; ++i) {
-        
+        std::cout<<"got to loop"<<i<<std::endl;
         floorGen_.generateRandomFloor(seed_ + i);
         FloorData fd;
         if(floorGen_.hasPresetEntities()) {
@@ -133,29 +144,38 @@ void GameEngine::preGenerateFloors() {
                     }
                     if (pcCh >= 0) break;
                 }
+                std::cout<<"pc chamber"<<pcCh<<std::endl;
                 // 2) Choose stair in any other chamber
                 int sx, sy;
                 int chCount = fd.chambers.size();
+                std::cout<<"chamber size"<<chCount<<std::endl;
                 // --- changed: replaced do/while(false) with proper loop to avoid single iteration ---
                 int targetCh;
                 do {
+                    
                     targetCh = std::rand() % chCount;
+                    std::cout<<"set target chamber to"<<targetCh<<std::endl;
                 } while (targetCh == pcCh); // ensure targetCh != pcCh
+                std::cout<<"target chamber"<<targetCh<<std::endl;
                 int idx = std::rand() % fd.chambers[targetCh].tiles.size();
                 sx = fd.chambers[targetCh].tiles[idx].x;
                 sy = fd.chambers[targetCh].tiles[idx].y;
                 commonStair.x = sx;
                 commonStair.y = sy;
+                //std::cout<<"stair cord: ("<<commonStair.x << "," <<commonStair.y << ")" << std::endl;
             }
+            
             fd.stair = commonStair;
-            fd.map[commonStair.y][commonStair.x] = '/';
+            floorGen_.setTile(commonStair.x, commonStair.y, '\\');
             fd.items   = floorGen_.spawnItems(seed_ + i);
             fd.enemies = floorGen_.spawnEnemies(seed_ + i, fd.items);
-        
+            fd.map = floorGen_.getMap();
+            //fd.map[commonStair.y][commonStair.x] = '\\';
         }
         floors_.push_back(std::move(fd));
         
     }
+    baseMap_ = floors_[0].map;
     
 }
 
@@ -255,10 +275,22 @@ bool GameEngine::isValidMove(Command cmd) {
         case Command::MoveSW:    ++pos.y; --pos.x; break;
         default: break;
     }
-    if (fd.map[pos.y][pos.x] == '.') return true;
-    if (fd.map[pos.y][pos.x] == '+') return true;
-    if (fd.map[pos.y][pos.x] == '#') return true;
-    if (fd.map[pos.y][pos.x] == '/') return true;
+    if (fd.map[pos.y][pos.x] == '.') {
+        std::cout<<"true for ."<<std::endl;
+        return true;
+    } 
+    if (fd.map[pos.y][pos.x] == '+') {
+        std::cout<<"true for +"<<std::endl;
+        return true;
+    }
+    if (fd.map[pos.y][pos.x] == '#') {
+        std::cout<<"true for #"<<std::endl;
+        return true;
+    }
+    if (fd.map[pos.y][pos.x] == '\\') {
+        std::cout<<"true for /"<<std::endl;
+        return true;
+    }
     
     
     
@@ -266,11 +298,12 @@ bool GameEngine::isValidMove(Command cmd) {
         //canCollect don't run if e is not DH
         if (e->isDragonHoard() && !(e->canCollect()) && e->getPosition() == pos) {
             e->changeStatus(); //change to being stepped on
+            std::cout<<"true for DH"<<std::endl;
             return true;             
         }
     }
     //dragon hoard already checked
-    if (fd.map[pos.y][pos.x] != 'G') return true;
+    //if (fd.map[pos.y][pos.x] != 'G') return true;
     return false;
 }
 
@@ -292,14 +325,25 @@ void GameEngine::handleCommand(Command cmd) {
             default: break;
         }
         Position oldPos = player_->getPosition();
-        setTile(oldPos.x, oldPos.y, '.'); // clear old position
+
+        if(baseMap_[oldPos.y][oldPos.x] == '#') {
+            std::cout<<"default #"<<std::endl;
+            setTile(oldPos.x, oldPos.y, '#'); // clear old position
+        }else if(baseMap_[oldPos.y][oldPos.x] == '+') {
+            std::cout<<"default +"<<std::endl;
+            setTile(oldPos.x, oldPos.y, '+'); // clear old position
+        }else {
+            std::cout<<"default ."<<std::endl;
+            setTile(oldPos.x, oldPos.y, '.'); // clear old position
+        }
+        
 
         // Move player
         
         player_->setPosition( player_->getPosition().x + dx, player_->getPosition().y + dy );
         // After moving, check for stairs
         Position newPos = player_->getPosition();
-        if (fd.map[newPos.y][newPos.x] == '/') {
+        if (fd.map[newPos.y][newPos.x] == '\\') {
             if (floorNum_ < (int)floors_.size()) {
                 // go to next floor
                 ++floorNum_;
@@ -309,6 +353,10 @@ void GameEngine::handleCommand(Command cmd) {
                 player_->setPosition(spawn.x, spawn.y);
 
                 player_->resetPotions();
+            }else if(floorNum_ >= (int)floors_.size()) {
+                std::cout<<"got to here"<<std::endl;
+                gameOver_ = true;
+                setTile(newPos.x, newPos.y, '@');
             }
         }else {
             setTile(newPos.x, newPos.y, '@'); // mark new position
@@ -451,7 +499,7 @@ void GameEngine::updateState() {
     if (!player_->isAlive()) {
         gameOver_ = true;
     }
-  
+    
 }
 
 //coloring not yet implemented, stats and action not yet implemented

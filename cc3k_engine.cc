@@ -16,6 +16,7 @@ namespace cc3k {
 bool operator==(const Position& a, const Position& b);
 struct FloorData {
     std::vector<std::string> map;
+    
     Position stair;
     std::vector<std::unique_ptr<Item>> items;
     std::vector<std::unique_ptr<Enemy>> enemies;
@@ -29,6 +30,7 @@ public:
 
 private:
 //added
+    std::vector<std::string> baseMap_;
     std::vector<std::string> actionLog_;
     std::string getRecentActionLog() const;
 
