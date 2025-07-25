@@ -72,7 +72,7 @@ int PlayerCharacter::calculateScore() const {
 
 
 // default behaviour, may be overriden by subclasses
-void PlayerCharacter::attackEffect(unique_ptr<Character> target) {
+void PlayerCharacter::attackEffect(Character* target) {
     if (target == nullptr) {
         return;
     }

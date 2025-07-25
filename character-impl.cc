@@ -59,6 +59,6 @@ int Character::calculateDamage(int attackerAtk) const {
 // Default implementations
 
 void Character::specialAbility() {}
-void Character::attackEffect(unique_ptr<Character> target) {}
+void Character::attackEffect(Character* target) {}
 //void Character::defenseEffect(Character &attacker) {}
 

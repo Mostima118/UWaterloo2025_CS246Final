@@ -3,6 +3,7 @@ import <string>;
 import <vector>;
 import <memory>;
 import <cstdlib>;
+import position;
 import command;
 import floor;
 import playercharacter;
@@ -18,7 +19,7 @@ struct FloorData {
     Position stair;
     std::vector<std::unique_ptr<Item>> items;
     std::vector<std::unique_ptr<Enemy>> enemies;
-    std::vector<std::vector<Position>> chambers;  // CHANGED: store chambers here
+    std::vector<Chamber> chambers;  // CHANGED: store chambers here
 };
 
 export class GameEngine {
@@ -27,21 +28,34 @@ public:
     void run();
 
 private:
+//added
+    std::vector<std::string> actionLog_;
+    std::string getRecentActionLog() const;
+
+    Enemy* getTargetCharacter(Command cmd);
+    Item* getTargetPotion(Command cmd);
+
+    void setTile(int x, int y, char ch);
+    bool isValidMove(Command cmd);
+
     void spawnPlayer(FloorData& fd);
+
+
+
     std::string layoutFile_;
     unsigned seed_;
     std::string raceCode_;
     int floorNum_;
+    bool enhancementsEnabled_;
     bool gameOver_;
-
     bool isPreset;
-
+    
     CommandInterp interpreter_;
     FloorGenerator floorGen_;
 
     std::unique_ptr<PlayerCharacter> player_;
-    //int playerGold_;
-    bool enhancementsEnabled_;
+
+
 
     std::vector<FloorData> floors_;
 

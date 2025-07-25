@@ -1,6 +1,7 @@
 export module potion;
 
 import <string>;
+
 import item;
 
 enum class PotionType {
@@ -17,7 +18,7 @@ protected:
     // potionType will be one of the above 6 types
     PotionType potionType;
     // Default to be false, if used once, will be changed to true
-    static bool seen[6] = {false, false, false, false, false, false};
+    static bool seen[6];
 
 public:
     Potion(int x, int y, PotionType type);
@@ -31,12 +32,18 @@ public:
     bool isSeen();
 
     // Change isSeen to true
-    void See();
+    void See() override;
 
     bool isPotion() const override;
 
+    bool canCollect() override;
+
     // This return the symbol of the potion -- "P"
     char getSymbol() const;
+
+    int getValue() override;
+
+    void changeStatus() override;
 
     // getType function returns the NUMBER correlated with the potion
     //  Ex. Restore Health (RH) is '0', Boost Atk (BA) is '1' ...
@@ -51,6 +58,7 @@ public:
     RestoreHealthPotion(int x, int y);
     char getSymbol() const override;
     std::string use() override;
+    char getType() override;
 };
 
 // BA
@@ -59,6 +67,7 @@ public:
     BoostAtkPotion(int x, int y);
     char getSymbol() const override;
     std::string use() override;
+    char getType() override;
 };
 
 // BD
@@ -67,6 +76,7 @@ public:
     BoostDefPotion(int x, int y);
     char getSymbol() const override;
     std::string use() override;
+    char getType() override;
 };
 
 // PH
@@ -75,6 +85,7 @@ public:
     PoisonHealthPotion(int x, int y);
     char getSymbol() const override;
     std::string use() override;
+    char getType() override;
 };
 
 // WA
@@ -83,6 +94,7 @@ public:
     WoundAtkPotion(int x, int y);
     char getSymbol() const override;
     std::string use() override;
+    char getType() override;
 };
 
 // WD
@@ -91,4 +103,5 @@ public:
     WoundDefPotion(int x, int y);
     char getSymbol() const override;
     std::string use() override;
+    char getType() override;
 };

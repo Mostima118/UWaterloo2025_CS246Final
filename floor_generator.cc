@@ -6,9 +6,10 @@ import <queue>;
 import item;
 import enemy;
 import playercharacter;
+import position;
 
 namespace cc3k {
-export struct Position { int x; int y; };
+
 export struct Chamber {
     std::vector<Position> tiles;
     bool contains(const Position &p) const {
@@ -24,10 +25,10 @@ public:
     void generateRandomFloor(unsigned seed = 0);
     const std::vector<std::string>& getMap() const;
     //identifyChambers
-    std::vector<Chamber> identifyChambers() const;
+    std::vector<Chamber> identifyChambers();
     void setTile(int x, int y, char ch);
-    std::vector<std::unique_ptr<Item>> spawnItems(unsigned seed) const;
-    std::vector<std::unique_ptr<Enemy>> spawnEnemies(unsigned seed) const;
+    std::vector<std::unique_ptr<Item>> spawnItems(unsigned seed);
+    std::vector<std::unique_ptr<Enemy>> spawnEnemies(unsigned seed, const std::vector<std::unique_ptr<Item>>& items);
 
     bool hasPresetEntities() const;
     Position findPresetStairs();

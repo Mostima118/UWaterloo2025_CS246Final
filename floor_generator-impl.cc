@@ -7,7 +7,11 @@ import <ctime>;
 import <cctype>;
 import item;
 import enemy;
+import position;
 import playercharacter;
+import playerfactory;
+import enemyfactory;
+import itemfactory;
 
 namespace cc3k {
 //settile
@@ -57,7 +61,7 @@ void FloorGenerator::generateRandomFloor(unsigned) {
 }
 
 //new function: finish chamber initializing
-std::vector<Chamber> FloorGenerator::identifyChambers() const {
+std::vector<Chamber> FloorGenerator::identifyChambers() {
     int H = map_.size(), W = map_[0].size();
     std::vector<std::vector<bool>> seen(H, std::vector<bool>(W,false));
     std::vector<Chamber> chambers;
@@ -90,7 +94,7 @@ const std::vector<std::string>& FloorGenerator::getMap() const {
     return map_;
 }
 
-bool FloorGenerator::hasPresetEntites() const {
+bool FloorGenerator::hasPresetEntities() const {
     int h = map_.size();
     int w = map_[0].size();
     for (int y = 0; y < h; ++y) {
@@ -143,7 +147,7 @@ std::vector<std::unique_ptr<Enemy>> FloorGenerator::spawnPresetEnemies() {
         for (int x = 0; x < w; ++x) {
             char c = map_[y][x];
             //changed to c style strchr
-            if (strchr("HWEOMDL", c)) {
+            if ( c == 'H' || c == 'W' || c == 'E' || c == 'O' || c == 'M' || c == 'D' || c == 'L' ) {
                 auto e = EnemyFactory::createEnemy(c);
                 e->setPosition(x, y);
 
@@ -154,7 +158,7 @@ std::vector<std::unique_ptr<Enemy>> FloorGenerator::spawnPresetEnemies() {
                             if (y + i >= 0 && y + i < h && x + j >= 0 && x + j < w) {
                                 char temp = map_[y + i][x + j];
                                 if (temp == '9') {
-                                    e->setHoardPos(x + j, y + i);
+                                    e->setHoardPos(Position{x + j, y + i});
                                 }
                             }
                         }
@@ -230,10 +234,10 @@ std::vector<std::unique_ptr<Enemy>> FloorGenerator::spawnEnemies(unsigned seed, 
     for (auto &it : items) {
         if (it->isDragonHoard()) {
             Position hoard = it->getPosition();
-            auto d = EnemyFactory::createDragon(hoard);
+            auto d = EnemyFactory::createEnemy('D');
+            d->setHoardPos(hoard);
             Position spawn = getRandomFreeNeighbor(map_, hoard);
             d->setPosition(spawn.x, spawn.y);
-            d->setHoardPos(hoard.x, hoard.y);
             setTile(spawn.x, spawn.y, d->getSymbol());
             enemies.push_back(std::move(d));
         }

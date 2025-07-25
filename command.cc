@@ -6,10 +6,13 @@ export enum class Command {
     // Movement
     MoveNorth, MoveSouth, MoveEast, MoveWest,
     MoveNE, MoveNW, MoveSE, MoveSW,
-    UpStairs, DownStairs,
+    
     // Actions
     UsePotionNorth, UsePotionSouth, UsePotionEast, UsePotionWest,
+    UsePotionNE, UsePotionNW, UsePotionSE, UsePotionSW,
+
     AttackNorth, AttackSouth, AttackEast, AttackWest,
+    AttackNE, AttackNW, AttackSE, AttackSW,
     // Race selection
     SelectShade, SelectDrow, SelectVampire, SelectTroll, SelectGoblin,
     // Control

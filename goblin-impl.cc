@@ -5,7 +5,7 @@ using namespace std;
 
 Goblin::Goblin(int hp, int maxHP, int atk, int def, char mapSymbol, string type, string race) : PlayerCharacter{hp, maxHP, atk, def, mapSymbol, type, race} {}
 
-void Goblin::attackEffect(unique_ptr<Character> target) {
+void Goblin::attackEffect(Character* target) {
     if (target == nullptr) {
         return;
     }

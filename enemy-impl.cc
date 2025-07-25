@@ -7,8 +7,11 @@ import <ctime>;
 
 using namespace std;
 
+bool Enemy::hostile = false;
+
+
 Enemy::Enemy(int hp, int atk, int def, char mapSymbol, string type) : 
-    Character{hp, hp, atk, def, mapSymbol, type} {}
+    Character{hp, hp, atk, def, mapSymbol, type}, hoardPos{Position()} {}
 
 // base behaviour for non human/merchant enemies - randomly add either 1 or 2 gold to player total
 int Enemy::dropGold() const {
@@ -22,7 +25,7 @@ int Enemy::dropGold() const {
     }
 }
 
-void Enemy::attackEffect(unique_ptr<Character> target) {
+void Enemy::attackEffect(Character* target) {
     if (target == nullptr) {
         return;
     }
@@ -33,4 +36,20 @@ void Enemy::attackEffect(unique_ptr<Character> target) {
         int damage = target->calculateDamage(atk);
         target->setHP(target->getHP() - damage);
     }
+}
+
+bool Enemy::isHostile() { 
+    return hostile; 
+}
+
+void Enemy::setHostile(bool newHostile) { 
+    hostile = newHostile; 
+}
+
+void Enemy::setHoardPos(Position pos) {
+    hoardPos = pos;
+}
+
+Position Enemy::getHoardPos() const {
+    return hoardPos;
 }

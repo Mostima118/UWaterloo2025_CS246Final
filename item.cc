@@ -3,11 +3,13 @@ export module item;
 import <string>;
 import <memory>;
 import <vector>;
+import position;
 
 export class Item {
 protected:
     int x;
     int y;
+    Position p;
 
 public:
     Item(int x, int y);
@@ -15,9 +17,12 @@ public:
 
     int getX() const;
     int getY() const;
+    Position getPosition();
 
     // Reset the position
     void setPosition(int x, int y);
+
+    virtual int getValue() = 0;
 
     // getType will return the preset number ('0' - '9') of each item
     virtual char getType() = 0;
@@ -33,19 +38,12 @@ public:
 
     virtual bool isPotion() const;
 
+    virtual bool canCollect() = 0;
+
+    virtual void changeStatus () = 0;
+
+    virtual void See() = 0;
+
     // Check if an item is a dragon hoard, defaulted to false
     virtual bool isDragonHoard() const { return false; }
-
-    // Create item based on the preset ('0' - '9'), used for testing purposes
-    static std::unique_ptr<Item> createPreset(char itemType);
-
-    // Random generation, potion
-    static std::unique_ptr<Item> createRandomPotion(unsigned seed = 0);
-
-    // Random generation, treasure
-    static std::unique_ptr<Item> createRandomTreasure(unsigned seed = 0);
-        
-    // createGold creates two piles of normal gold when human is killed
-    //  and one pile of merchant hoard when merchant is killed
-    static std::unique_ptr<Item> createGold(char c);
 };

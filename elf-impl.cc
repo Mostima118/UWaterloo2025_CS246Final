@@ -5,7 +5,7 @@ using namespace std;
 
 Elf::Elf(int hp, int atk, int def, char mapSymbol, std::string type) : Enemy{hp, atk, def, mapSymbol, type} {}
 
-void Elf::attackEffect(unique_ptr<Character> target) {
+void Elf::attackEffect(Character* target) {
     if (target == nullptr) {
         return;
     }

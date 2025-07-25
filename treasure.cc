@@ -2,6 +2,8 @@ export module treasure;
 
 import item;
 
+import <string>;
+
 export class Treasure : public Item {
 protected:
     int value;
@@ -10,7 +12,7 @@ public:
     Treasure(int x, int y, int val);
     virtual ~Treasure() = default;
 
-    int getValue() const;
+    int getValue() override;
 
     // This returns the symbol of Gold: 'G'
     char getSymbol() const;
@@ -25,11 +27,15 @@ public:
     virtual bool isDragonHoard() const { return false; }
 
     // For DragonHoard: only collectible when dragon is slain
-    virtual bool canCollect() const = 0;
+    virtual bool canCollect() = 0;
+
+    virtual void changeStatus () override = 0;
 
     // Adds value to player; only implemented in leaf classes
     //  Returns the value of the gold
-    //int use() override = 0;
+    virtual std::string use() override = 0;
+
+    void See() override;
 };
 
 // Below are different types of treasure
@@ -38,7 +44,9 @@ public:
     NormalGold(int x, int y);
     char getSymbol() const override;
     char getType() override;
-    //int use() override;
+    bool canCollect() override;
+    std::string use() override;
+    void changeStatus() override;
 };
 
 export class SmallGold : public Treasure {
@@ -46,7 +54,9 @@ public:
     SmallGold(int x, int y);
     char getSymbol() const override;
     char getType() override;
-    //int use() override;
+    bool canCollect() override;
+    std::string use() override;
+    void changeStatus() override;
 };
 
 export class MerchantHoard : public Treasure {
@@ -54,7 +64,9 @@ public:
     MerchantHoard(int x, int y);
     char getSymbol() const override;
     char getType() override;
-    //int use() override;
+    bool canCollect() override;
+    std::string use() override;
+    void changeStatus() override;
 };
 
 export class DragonHoard : public Treasure {
@@ -67,18 +79,18 @@ public:
     char getType() override;
 
     // Returns the collectStatus
-    bool canCollect() const override;
+    bool canCollect() override;
 
     // changeCollectStatus changes the collectStatus
     void changeCollectStatus();
 
     bool isDragonHoard() const override { return true; }
-    //int use() override;
+    std::string use() override;
 
     // getStatus shows whether the hoard has been stepped on or not
     //  Returns status
     bool getStatus() const;
 
     // changeStatus change the status from true to false and vice versa
-    void changeStatus();
+    void changeStatus() override;
 };

@@ -32,7 +32,7 @@ vampire-impl.cc
 troll-impl.cc
 goblin-impl.cc
 human-impl.cc
-dwarf=impl.cc
+dwarf-impl.cc
 elf-impl.cc
 orc-impl.cc
 merchant-impl.cc

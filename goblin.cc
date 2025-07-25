@@ -6,5 +6,5 @@ import playercharacter;
 export class Goblin : public PlayerCharacter {
  public:
     Goblin(int hp, int maxHP, int atk, int def, char mapSymbol, std::string type, std::string race);
-    void attackEffect(std::unique_ptr<Character> target) override;
+    void attackEffect(Character* target) override;
 };
