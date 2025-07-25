@@ -21,7 +21,7 @@ int Elf::attackEffect(Character* target) {
         ++numhits;
     }
 
-    if (target->getType() != "Drow") {
+    if (target->getRace() != "Drow") {
         //unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
         //srand(time(0));
         int miss = rand() % 2;

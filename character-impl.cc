@@ -58,6 +58,7 @@ int Character::calculateDamage(int attackerAtk) const {
 
 // Default implementations
 
+std::string Character::getRace() {return "a";}
 void Character::specialAbility() {}
 int Character::attackEffect(Character* target) {return 0;}
 //void Character::defenseEffect(Character &attacker) {}

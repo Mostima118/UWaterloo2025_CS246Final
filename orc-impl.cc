@@ -13,7 +13,7 @@ int Orc::attackEffect(Character* target) {
     int miss = rand() % 2;
     if (miss == 0) { // only hits 50% of the time
         int damage = target->calculateDamage(atk);
-        if (target->getType() == "Goblin") {
+        if (target->getRace() == "Goblin") {
             damage = static_cast<int>(damage * 1.5);
         }
         target->setHP(target->getHP() - damage);

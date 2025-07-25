@@ -33,6 +33,8 @@ export class Character {
    // MAYBE NEED TO MAKE PURE VIRTUAL AGAIN LATER
    virtual void specialAbility();
 
+   virtual std::string getRace();
+
    // take pointer so if target not found have null ptr and just do nothing
    virtual int attackEffect(Character* target);
    //virtual void defenseEffect(Character &attacker); // not actually necessary? can just have effects in attack
