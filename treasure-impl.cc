@@ -29,6 +29,10 @@ std::string NormalGold::use() {
 
 void NormalGold::changeStatus() { return; }
 
+bool NormalGold::isDragonHoard() {
+    return false;
+}
+
 // ===== SmallGold =====
 SmallGold::SmallGold(int x, int y) : Treasure(x, y, 1) {}
 
@@ -43,6 +47,10 @@ std::string SmallGold::use() {
 }
 
 void SmallGold::changeStatus() { return; }
+
+bool SmallGold::isDragonHoard() {
+    return false;
+}
 
 // ===== MerchantHoard =====
 MerchantHoard::MerchantHoard(int x, int y) : Treasure(x, y, 4) {}
@@ -59,6 +67,10 @@ std::string MerchantHoard::use() {
 
 void MerchantHoard::changeStatus() { return; }
 
+bool MerchantHoard::isDragonHoard() {
+    return false;
+}
+
 // ===== DragonHoard =====
 DragonHoard::DragonHoard(int x, int y, bool alive) 
     : Treasure(x, y, 6), status{false}, collectStatus{false} {}
@@ -69,7 +81,7 @@ std::string DragonHoard::use() {
     return "9";
 }
 
-bool DragonHoard::isDragonHoard() const {
+bool DragonHoard::isDragonHoard() {
     return true;
 }
 

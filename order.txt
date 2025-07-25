@@ -18,6 +18,12 @@ playerfactory.cc
 enemyfactory.cc
 item.cc
 potion.cc
+restorehealth.cc
+boostatk.cc
+boostdef.cc
+poisonhealth.cc
+woundatk.cc
+wounddef.cc
 treasure.cc
 itemfactory.cc
 command.cc
@@ -42,6 +48,12 @@ playerfactory-impl.cc
 enemyfactory-impl.cc
 item-impl.cc
 potion-impl.cc
+restorehealth-impl.cc
+boostatk-impl.cc
+boostdef-impl.cc
+poisonhealth-impl.cc
+woundatk-impl.cc
+wounddef-impl.cc
 treasure-impl.cc
 itemfactory-impl.cc
 command-impl.cc

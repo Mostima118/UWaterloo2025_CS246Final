@@ -16,6 +16,10 @@ export struct Chamber {
         for (auto &t : tiles) if (t.x==p.x && t.y==p.y) return true;
         return false;
     }
+    auto begin() { return tiles.begin(); }
+    auto end() { return tiles.end(); }
+    auto begin() const { return tiles.begin(); }
+    auto end() const { return tiles.end(); }
 };
 export class FloorGenerator {
 public:

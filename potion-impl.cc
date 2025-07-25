@@ -41,33 +41,3 @@ bool Potion::isPotion() const { return true; }
 bool Potion::canCollect() { return true; }
 
 void changeStatus() { return; }
-
-// RestoreHealthPotion
-RestoreHealthPotion::RestoreHealthPotion(int x, int y) : Potion(x, y, PotionType::RH) {}
-char RestoreHealthPotion::getType() { return '0'; }
-std::string RestoreHealthPotion::use() { return "RH"; }
-
-// BoostAtkPotion
-BoostAtkPotion::BoostAtkPotion(int x, int y) : Potion(x, y, PotionType::BA) {}
-char BoostAtkPotion::getType() { return '1'; }
-std::string BoostAtkPotion::use() { return "BA"; }
-
-// BoostDefPotion
-BoostDefPotion::BoostDefPotion(int x, int y) : Potion(x, y, PotionType::BD) {}
-char BoostDefPotion::getType() { return '2'; }
-std::string BoostDefPotion::use() { return "BD"; }
-
-// PoisonHealthPotion
-PoisonHealthPotion::PoisonHealthPotion(int x, int y) : Potion(x, y, PotionType::PH) {}
-char PoisonHealthPotion::getType() { return '3'; }
-std::string PoisonHealthPotion::use() { return "PH"; }
-
-// WoundAtkPotion
-WoundAtkPotion::WoundAtkPotion(int x, int y) : Potion(x, y, PotionType::WA) {}
-char WoundAtkPotion::getType() { return '4'; }
-std::string WoundAtkPotion::use() { return "WA"; }
-
-// WoundDefPotion
-WoundDefPotion::WoundDefPotion(int x, int y) : Potion(x, y, PotionType::WD) {}
-char WoundDefPotion::getType() { return '5'; }
-std::string WoundDefPotion::use() { return "WD"; }

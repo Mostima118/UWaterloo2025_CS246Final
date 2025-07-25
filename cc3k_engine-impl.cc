@@ -3,6 +3,7 @@ import <iostream>;
 import <string>;
 import <vector>;
 import <memory>;
+
 import <cstdlib>;
 import <algorithm>;
 import <numeric>;
@@ -17,7 +18,11 @@ import character;
 import enemy;
 import item;
 
+import <iterator>;
+
+
 namespace cc3k {
+
 bool operator==(const Position& a, const Position& b) {
     return a.x == b.x && a.y == b.y;
 }
@@ -136,9 +141,9 @@ void GameEngine::preGenerateFloors() {
                 do {
                     targetCh = std::rand() % chCount;
                 } while (targetCh == pcCh); // ensure targetCh != pcCh
-                int idx = std::rand() % fd.chambers[targetCh].size();
-                sx = fd.chambers[targetCh][idx].x;
-                sy = fd.chambers[targetCh][idx].y;
+                int idx = std::rand() % fd.chambers[targetCh].tiles.size();
+                sx = fd.chambers[targetCh].tiles[idx].x;
+                sy = fd.chambers[targetCh].tiles[idx].y;
                 commonStair.x = sx;
                 commonStair.y = sy;
             }
@@ -287,7 +292,7 @@ void GameEngine::handleCommand(Command cmd) {
             default: break;
         }
         Position oldPos = player_->getPosition();
-        fd.setTile(oldPos.x, oldPos.y, '.'); // clear old position
+        setTile(oldPos.x, oldPos.y, '.'); // clear old position
 
         // Move player
         
@@ -306,7 +311,7 @@ void GameEngine::handleCommand(Command cmd) {
                 player_->resetPotions();
             }
         }else {
-            fd.setTile(newPos.x, newPos.y, '@'); // mark new position
+            setTile(newPos.x, newPos.y, '@'); // mark new position
         }
         return;
     }
@@ -324,7 +329,7 @@ void GameEngine::handleCommand(Command cmd) {
             potion->See();
             player_->usePotion(potion->use());
             Position p = potion->getPosition();
-            floorGen_.setTile(p.x, p.y, '.');
+            setTile(p.x, p.y, '.');
 
             // Remove it from item list
             auto &items = fd.items;
@@ -352,7 +357,7 @@ void GameEngine::updateState() {
         int dx = std::abs(ep.x - pos.x);
         int dy = std::abs(ep.y - pos.y);
         if ((dx <= 1 && dy <= 1) && (dx != 0 || dy != 0) && e->isAlive()) {
-            e->attackEffect(*player_);
+            e->attackEffect(player_.get());
         }
     }
 
@@ -386,9 +391,9 @@ void GameEngine::updateState() {
             cand.push_back(np);
         }
         if (cand.empty()) continue;
-        floorGen_.setTile(cur.x, cur.y, '.'); //return to '.'
+        setTile(cur.x, cur.y, '.'); //return to '.'
         Position dest = cand[std::rand() % cand.size()];
-        floorGen_.setTile(dest.x, dest.y, e->getSymbol()); //set to enemy symbol
+        setTile(dest.x, dest.y, e->getSymbol()); //set to enemy symbol
         e->setPosition(dest.x, dest.y);
         moved[idx] = true;
     }
@@ -398,14 +403,16 @@ void GameEngine::updateState() {
         if (!(*it)->isAlive()) {
             if((*it)->getType()=="Human") {
                 fd.items.push_back(ItemFactory::createGold('H'));//createGold is for dead humans only
-                fd.items.back()->setPosition((*it)->getPosition(.x, (*it)->getPosition().y)); //last item added
-                floorGen_.setTile((*it)->getPosition().x, (*it)->getPosition().y, 'G');
+                fd.items.back()->setPosition((*it)->getPosition().x, (*it)->getPosition().y); //last item added
+                setTile((*it)->getPosition().x, (*it)->getPosition().y, 'G');
 
             }else if((*it)->getType()=="Dragon") {
                 Position ex = (*it)->getPosition();
                 for (auto &e : fd.items) {
                     Position ep = e->getPosition();
-                    if (ex == ep) {};
+                    if (ex == ep) {
+                        // If dead end ...
+                    };
                 }
                 
             }else if((*it)->getType()=="Merchant") {
@@ -413,11 +420,11 @@ void GameEngine::updateState() {
                    
                 fd.items.push_back(ItemFactory::createGold('G'));  
                 fd.items.back()->setPosition((*it)->getPosition().x, (*it)->getPosition().y); //last item added
-                floorGen_.setTile((*it)->getPosition().x, (*it)->getPosition().y, 'G');  
+                setTile((*it)->getPosition().x, (*it)->getPosition().y, 'G');  
                 
             }else {
                 player_->addGold((*it)->dropGold());
-                floorGen_.setTile((*it)->getPosition().x, (*it)->getPosition().y, '.');
+                setTile((*it)->getPosition().x, (*it)->getPosition().y, '.');
             }
             
             it = fd.enemies.erase(it);
@@ -432,7 +439,7 @@ void GameEngine::updateState() {
             //dragonHoard
             if (!(*it)->isPotion() || ((*it)->isDragonHoard()&&(*it)->canCollect())) {
                 player_->addGold((*it)->getValue());
-                floorGen_.setTile( (*it)->getPosition().x, (*it)->getPosition().y, '.' ); // calls setTile with '.' char
+                setTile( (*it)->getPosition().x, (*it)->getPosition().y, '.' ); // calls setTile with '.' char
                 it = fd.items.erase(it); 
             }
         } else {

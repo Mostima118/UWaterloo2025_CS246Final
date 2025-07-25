@@ -24,7 +24,7 @@ public:
     // Return false, treasure is not a potion
     bool isPotion() const override;
 
-    virtual bool isDragonHoard() const { return false; }
+    virtual bool isDragonHoard() = 0;
 
     // For DragonHoard: only collectible when dragon is slain
     virtual bool canCollect() = 0;
@@ -47,6 +47,7 @@ public:
     bool canCollect() override;
     std::string use() override;
     void changeStatus() override;
+    bool isDragonHoard() override;
 };
 
 export class SmallGold : public Treasure {
@@ -57,6 +58,7 @@ public:
     bool canCollect() override;
     std::string use() override;
     void changeStatus() override;
+    bool isDragonHoard() override;
 };
 
 export class MerchantHoard : public Treasure {
@@ -67,6 +69,7 @@ public:
     bool canCollect() override;
     std::string use() override;
     void changeStatus() override;
+    bool isDragonHoard() override;
 };
 
 export class DragonHoard : public Treasure {
@@ -84,7 +87,7 @@ public:
     // changeCollectStatus changes the collectStatus
     void changeCollectStatus();
 
-    bool isDragonHoard() const override { return true; }
+    bool isDragonHoard() override;
     std::string use() override;
 
     // getStatus shows whether the hoard has been stepped on or not

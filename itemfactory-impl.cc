@@ -6,6 +6,13 @@ import <vector>;
 import <ctime>;
 import potion;
 import treasure;
+import restorehealthpotion;
+import boostatkpotion;
+import boostdefpotion;
+import poisonhealthpotion;
+import woundatkpotion;
+import wounddefpotion;
+
 
 // This function is to change the coordinates of the item after created
 void Item::setPosition(int x, int y) { this->x = x; this->y = y; }
@@ -57,13 +64,11 @@ std::unique_ptr<Item> ItemFactory::createRandomTreasure(unsigned seed) {
     }
 }
 
-std::vector<std::unique_ptr<Item>> ItemFactory::createGold(char c) {
-    std::vector<std::unique_ptr<Item>> goldItems;
+std::unique_ptr<Item> ItemFactory::createGold(char c) {
     if (c == 'H') {
-        goldItems.emplace_back(std::make_unique<NormalGold>(-1, -1));
-        goldItems.emplace_back(std::make_unique<NormalGold>(-1, -1));
+        return std::make_unique<MerchantHoard>(-1, -1);
     } else if (c == 'M') {
-        goldItems.emplace_back(std::make_unique<MerchantHoard>(-1, -1));
+        return std::make_unique<MerchantHoard>(-1, -1);
     }
-    return goldItems;
+    return nullptr;
 }

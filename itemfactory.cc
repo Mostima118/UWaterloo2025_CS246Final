@@ -6,6 +6,12 @@ import <vector>;
 import item;
 import potion;
 import treasure;
+import restorehealthpotion;
+import boostatkpotion;
+import boostdefpotion;
+import poisonhealthpotion;
+import woundatkpotion;
+import wounddefpotion;
 
 export class ItemFactory {
 public:
@@ -20,5 +26,5 @@ public:
         
     // createGold creates two piles of normal gold when human is killed
     //  and one pile of merchant hoard when merchant is killed
-    static std::vector<std::unique_ptr<Item>> createGold(char c);
+    static std::unique_ptr<Item> createGold(char c);
 };

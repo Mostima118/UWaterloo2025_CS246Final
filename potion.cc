@@ -4,7 +4,7 @@ import <string>;
 
 import item;
 
-enum class PotionType {
+export enum class PotionType {
     RH, // Restore HP - 0
     BA, // Boost Atk - 1
     BD, // Boost Def - 2
@@ -49,59 +49,5 @@ public:
     //  Ex. Restore Health (RH) is '0', Boost Atk (BA) is '1' ...
     char getType() override = 0;
     std::string use() override = 0;
-};
-
-// Below are the interfaces of different type of potions
-// RH
-export class RestoreHealthPotion : public Potion {
-public:
-    RestoreHealthPotion(int x, int y);
-    char getSymbol() const override;
-    std::string use() override;
-    char getType() override;
-};
-
-// BA
-export class BoostAtkPotion : public Potion {
-public:
-    BoostAtkPotion(int x, int y);
-    char getSymbol() const override;
-    std::string use() override;
-    char getType() override;
-};
-
-// BD
-export class BoostDefPotion : public Potion {
-public:
-    BoostDefPotion(int x, int y);
-    char getSymbol() const override;
-    std::string use() override;
-    char getType() override;
-};
-
-// PH
-export class PoisonHealthPotion : public Potion {
-public:
-    PoisonHealthPotion(int x, int y);
-    char getSymbol() const override;
-    std::string use() override;
-    char getType() override;
-};
-
-// WA
-export class WoundAtkPotion : public Potion {
-public:
-    WoundAtkPotion(int x, int y);
-    char getSymbol() const override;
-    std::string use() override;
-    char getType() override;
-};
-
-// WD
-export class WoundDefPotion : public Potion {
-public:
-    WoundDefPotion(int x, int y);
-    char getSymbol() const override;
-    std::string use() override;
-    char getType() override;
+    virtual bool isDragonHoard() = 0;
 };
