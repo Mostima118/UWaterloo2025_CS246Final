@@ -31,7 +31,7 @@ public:
 private:
 //added
     std::vector<std::string> baseMap_;
-    std::vector<std::string> actionLog_;
+    std::vector<std::vector<std::string>> actionLog_;
     std::string getRecentActionLog() const;
 
     Enemy* getTargetCharacter(Command cmd);
@@ -68,6 +68,10 @@ private:
     void updateState();
     void render() const;
     int calculateScore() const;
+
+    void startNewTurn();
+    void logAction(const std::string &msg);
+    const std::vector<std::string> &getRecentTurnLog() const;
 };
 
 }

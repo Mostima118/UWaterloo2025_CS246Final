@@ -13,7 +13,7 @@ protected:
 
 public:
     Item(int x, int y);
-    virtual ~Item() = default;
+    virtual ~Item();
 
     int getX() const;
     int getY() const;
@@ -36,7 +36,7 @@ public:
     // Symbol representation of potion "P" or treasure "G"
     virtual char getSymbol() const = 0;
 
-    virtual bool isPotion() const;
+    virtual bool isPotion() const = 0;
 
     virtual bool canCollect() = 0;
 

@@ -17,12 +17,6 @@ import smallgold;
 import merchanthoard;
 import dragonhoard;
 
-
-// This function is to change the coordinates of the item after created
-void Item::setPosition(int x, int y) { this->x = x; this->y = y; }
-
-bool Item::isPotion() const { return false; }
-
 std::unique_ptr<Item> ItemFactory::createPreset(char itemType) {
     switch (itemType) {
         case '0': return std::make_unique<RestoreHealthPotion>(-1, -1);

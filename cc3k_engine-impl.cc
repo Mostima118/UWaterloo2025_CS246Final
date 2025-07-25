@@ -36,10 +36,27 @@ GameEngine::GameEngine(std::string layoutFile, unsigned seed)
       isPreset{false}           
 {}
 
+void GameEngine::startNewTurn() {
+    actionLog_.emplace_back();         // push an empty vector<string>
+}
+
+void GameEngine::logAction(const std::string &msg) {
+    if (actionLog_.empty()) startNewTurn();
+    actionLog_.back().push_back(msg);
+}
+
+const std::vector<std::string>& GameEngine::getRecentTurnLog() const {
+    static const std::vector<std::string> empty;
+    if (actionLog_.empty()) return empty;
+    return actionLog_.back();
+  }
+
+/*
 std::string GameEngine::getRecentActionLog() const {
     if (actionLog_.empty()) return "No actions yet.";
     return actionLog_.back();  // or return all if needed
 }
+*/
 
 void GameEngine::spawnPlayer(FloorData &fd) {
     // 1) Choose a random chamber
@@ -56,9 +73,8 @@ void GameEngine::spawnPlayer(FloorData &fd) {
     // 4) (Optional) mark the map so render() will show the '@' immediately
     //fd.map[spawnPos.y][spawnPos.x] = '@';
 
-    std::cout 
-      << "spawnPlayer: placed player in chamber #" << chIdx 
-      << " at (" << spawnPos.x << "," << spawnPos.y << ")\n";
+    //actionLog_.push_back("spawnPlayer: placed player in chamber #" + chIdx + " at (" + spawnPos.x + "," + spawnPos.y + ")");
+    
 }
 void GameEngine::setTile(int x, int y, char ch) {
     floors_[floorNum_ - 1].map[y][x] = ch;
@@ -190,14 +206,16 @@ void GameEngine::preGenerateFloors() {
                 sy = fd.chambers[targetCh].tiles[idx].y;
                 commonStair.x = sx;
                 commonStair.y = sy;
-                //std::cout<<"stair cord: ("<<commonStair.x << "," <<commonStair.y << ")" << std::endl;
+                std::cout<<"stair cord: ("<<commonStair.x << "," <<commonStair.y << ")" << std::endl;
             }
             
             fd.stair = commonStair;
             floorGen_.setTile(commonStair.x, commonStair.y, '\\');
+            std::cout << "success set tile"<< std::endl;
             fd.items   = floorGen_.spawnItems(seed_ + i);
             fd.enemies = floorGen_.spawnEnemies(seed_ + i, fd.items);
             fd.map = floorGen_.getMap();
+            std::cout << "success set map"<< std::endl;
             //fd.map[commonStair.y][commonStair.x] = '\\';
         }
         floors_.push_back(std::move(fd));
@@ -304,19 +322,19 @@ bool GameEngine::isValidMove(Command cmd) {
         default: break;
     }
     if (fd.map[pos.y][pos.x] == '.') {
-        std::cout<<"true for ."<<std::endl;
+        //std::cout<<"true for ."<<std::endl;
         return true;
     } 
     if (fd.map[pos.y][pos.x] == '+') {
-        std::cout<<"true for +"<<std::endl;
+        //std::cout<<"true for +"<<std::endl;
         return true;
     }
     if (fd.map[pos.y][pos.x] == '#') {
-        std::cout<<"true for #"<<std::endl;
+       // std::cout<<"true for #"<<std::endl;
         return true;
     }
     if (fd.map[pos.y][pos.x] == '\\') {
-        std::cout<<"true for /"<<std::endl;
+       // std::cout<<"true for /"<<std::endl;
         return true;
     }
     
@@ -331,7 +349,7 @@ bool GameEngine::isValidMove(Command cmd) {
         }
     }
     //dragon hoard already checked
-    //if (fd.map[pos.y][pos.x] != 'G') return true;
+    if (fd.map[pos.y][pos.x] == 'G') return true;
     return false;
 }
 
@@ -371,6 +389,7 @@ void GameEngine::handleCommand(Command cmd) {
         player_->setPosition( player_->getPosition().x + dx, player_->getPosition().y + dy );
         // After moving, check for stairs
         Position newPos = player_->getPosition();
+        //actionLog_.push_back("Player moved to (" +newPos.x +"," + newPos.y+")");
         if (fd.map[newPos.y][newPos.x] == '\\') {
             if (floorNum_ < (int)floors_.size()) {
                 // go to next floor
@@ -402,6 +421,8 @@ void GameEngine::handleCommand(Command cmd) {
     // Attack commands
     if (cmd >= Command::AttackNorth && cmd <= Command::AttackSW) {
         player_->attackEffect(getTargetCharacter(cmd));
+        //int damage = getTargetCharacter(cmd)->calculateDamage(player_->getAtk());
+        //actionLog_.push_back(std::string("Player attacked ") + getTargetCharacter(cmd)->getType() + " for " + std::to_string(damage) + " damage.");
         return;
     }
 
@@ -578,7 +599,7 @@ void GameEngine::render() const {
               << "\n" << "HP: " << player_->getHP()
               << "\n" << "Atk: " << player_->getAtk()
               << "\n" << "Def: " << player_->getDef()
-              << "\n" << "Action: " << getRecentActionLog()
+              //<< "\n" << "Action: " << getRecentTurnLog()
               << std::endl;
 }
 
