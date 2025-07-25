@@ -617,10 +617,9 @@ void GameEngine::render() const {
                 // 0 default, 30 black, 31 red, 32 green, 33 yellow, 34 blue, 35 purple
                 case '@': case '#':
                     std::cout << "\033[1;34m"; break; // Player and Stairs - Blue
-                case '0': case '1': case '2': case '3':
-                case '4': case '5':
+                case 'P':
                     std::cout << "\033[1;32m"; break; // Potions - Green
-                case '6':
+                case 'G':
                     std::cout << "\033[1;33m"; break; // Gold - Yellow
                 case 'H': case 'W': case 'E':
                 case 'O': case 'M': case 'D': case 'L':
