@@ -40,4 +40,8 @@ bool Potion::isPotion() const { return true; }
 
 bool Potion::canCollect() { return true; }
 
-void changeStatus() { return; }
+Potion::~Potion() = default;
+
+// provide a no‑op default for changeStatus()
+// (since every subclass overrides it if needed)
+void Potion::changeStatus() {}

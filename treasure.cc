@@ -10,7 +10,7 @@ protected:
 
 public:
     Treasure(int x, int y, int val);
-    virtual ~Treasure() = default;
+    virtual ~Treasure();
 
     int getValue() override;
 

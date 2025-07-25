@@ -8,6 +8,8 @@ int Treasure::getValue() { return value; }
 
 bool Treasure::canCollect() { return true; }
 
+Treasure::~Treasure() = default;
+
 bool Treasure::isPotion() const { return false; }
 
 char Treasure::getSymbol() const { return 'G'; }

@@ -7,3 +7,5 @@ RestoreHealthPotion::RestoreHealthPotion(int x, int y) : Potion(x, y, PotionType
 char RestoreHealthPotion::getType() { return '0'; }
 std::string RestoreHealthPotion::use() { return "RH"; }
 bool RestoreHealthPotion::isDragonHoard() { return false; }
+// ADD THIS:
+char RestoreHealthPotion::getSymbol() const { return 'P'; }

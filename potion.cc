@@ -22,7 +22,7 @@ protected:
 
 public:
     Potion(int x, int y, PotionType type);
-    virtual ~Potion() = default;
+    virtual ~Potion();
 
     // This function return the potion type
     //  Ex. RH, BA, BD ...
