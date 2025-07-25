@@ -5,6 +5,7 @@ import <vector>;
 import <cstdlib>;
 import <ctime>;
 import <cctype>;
+import <iostream>;
 import item;
 import enemy;
 import position;
@@ -56,8 +57,8 @@ void FloorGenerator::loadLayout(const std::string& filename) {
     while (std::getline(fin, line)) map_.push_back(line);
 }
 
-void FloorGenerator::generateRandomFloor(unsigned) {
-    loadLayout("default_floor.txt");
+void FloorGenerator::generateRandomFloor(unsigned, std::string fileName) {
+    loadLayout(fileName);
 }
 
 //new function: finish chamber initializing
@@ -99,11 +100,17 @@ bool FloorGenerator::hasPresetEntities() const {
     int w = map_[0].size();
     for (int y = 0; y < h; ++y) {
         for (int x = 0; x < w; ++x) {
-            if (isalnum(map_[y][x])) {
+            
+            //std::cout << map_[y][x] << std::endl;
+            char c = map_[y][x];
+
+            if (c != '.' && c != '+' && c != '#' && c != '\\' && c != '|' && c != '-' && c != ' ') {
+                std::cout << "found an entity: "<< c << std::endl;
                 return true;
             }
         }
     }
+    std::cout << "found NO ENTITIES"<< std::endl;
     return false;
 }
 
@@ -115,10 +122,12 @@ Position FloorGenerator::findPresetStairs() {
             char c = map_[y][x];
             if (c == '\\') {
                 Position p{x, y};
+                std::cout << "FOUND STAIRS" << std::endl;
                 return p;
             }
         }
     }
+    std::cout << "did NOT FIND STAIRS" << std::endl;
     return Position{0, 0};
 }
 
@@ -131,10 +140,12 @@ std::unique_ptr<PlayerCharacter> FloorGenerator::spawnPresetPlayer() {
             if (c == '@') {
                 auto p = PlayerFactory::createPlayer("s"); // default just make shade
                 p->setPosition(x, y);
+                std::cout << "FOUND PLAYER" << std::endl;
                 return p;
             }
         }
     }
+    std::cout << "DID NOT FIND PLAYER" << std::endl;
     return nullptr;
 }
 
@@ -164,6 +175,7 @@ std::vector<std::unique_ptr<Enemy>> FloorGenerator::spawnPresetEnemies() {
                         }
                     }
                 }
+                std::cout << "FOUND ENEMY" << std::endl;
                 enemies.push_back(std::move(e));
                 setTile(x, y, enemies.back()->getSymbol());
             }
@@ -179,6 +191,7 @@ std::vector<std::unique_ptr<Item>> FloorGenerator::spawnPresetItems() {
             auto it = ItemFactory::createPreset(c);
             it->setPosition(x, y);
             items.push_back(std::move(it));
+            std::cout << "FOUND ITEM" << std::endl;
             // update map, replace numbers with actual displayed symbols for player
             setTile(x, y, items.back()->getSymbol());
         }

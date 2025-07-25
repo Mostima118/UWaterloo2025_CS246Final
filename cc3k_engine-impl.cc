@@ -82,8 +82,8 @@ void GameEngine::run() {
         
         
         while (true) {
-            std::cout<<"got to render"<<std::endl;
-            render(); 
+            std::cout<<"got to render ahsudihwauohsoidhwa"<<std::endl;
+            render();
             if(processInput()) break; //input processed
             updateState(); 
             if(gameOver_) break;
@@ -115,18 +115,24 @@ void GameEngine::preGenerateFloors() {
     
     for (int i = 0; i < 5; ++i) {
         std::cout<<"got to loop"<<i<<std::endl;
-        floorGen_.generateRandomFloor(seed_ + i);
+        floorGen_.generateRandomFloor(seed_ + i, layoutFile_);
         FloorData fd;
         if(floorGen_.hasPresetEntities()) {
+            std::cout << "have preset entities"<< std::endl;
             isPreset = true;
             player_ = floorGen_.spawnPresetPlayer();
+            std::cout << "spawned player" << std::endl;
             fd.enemies = floorGen_.spawnPresetEnemies();
+            std::cout << "spawned enemies" << std::endl;
             fd.items = floorGen_.spawnPresetItems();
+            std::cout << "spawned items" << std::endl;
             fd.stair = floorGen_.findPresetStairs();
+            std::cout << "spawned stairs" << std::endl;
             fd.map = floorGen_.getMap();
             fd.chambers = floorGen_.identifyChambers();
 
         } else {
+            std::cout << "no preset entities"<< std::endl;
             fd.map = floorGen_.getMap();
            
             std::srand(seed_ + i);
@@ -154,7 +160,7 @@ void GameEngine::preGenerateFloors() {
                 do {
                     
                     targetCh = std::rand() % chCount;
-                    std::cout<<"set target chamber to"<<targetCh<<std::endl;
+                    
                 } while (targetCh == pcCh); // ensure targetCh != pcCh
                 std::cout<<"target chamber"<<targetCh<<std::endl;
                 int idx = std::rand() % fd.chambers[targetCh].tiles.size();

@@ -26,7 +26,7 @@ public:
     Position getRandomFreeNeighbor(const std::vector<std::string>& map, const Position& center) const;
     FloorGenerator() = default;
     void loadLayout(const std::string& filename);
-    void generateRandomFloor(unsigned seed = 0);
+    void generateRandomFloor(unsigned seed = 0, std::string fileName = "default_floor.txt");
     const std::vector<std::string>& getMap() const;
     //identifyChambers
     std::vector<Chamber> identifyChambers();
