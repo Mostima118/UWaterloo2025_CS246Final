@@ -37,5 +37,7 @@ public:
     //  Returns the value of the gold
     virtual std::string use() override = 0;
 
+    bool isSeen() override;
+
     void See() override;
 };

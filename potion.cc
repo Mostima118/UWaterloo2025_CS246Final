@@ -29,7 +29,7 @@ public:
     PotionType getPotionType() const;
 
     // Return true if the potion is seen, false otherwise
-    bool isSeen();
+    bool isSeen() override;
 
     // Change isSeen to true
     void See() override;

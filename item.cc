@@ -46,6 +46,8 @@ public:
 
     virtual void See() = 0;
 
+    virtual bool isSeen() = 0;
+
     // Check if an item is a dragon hoard, defaulted to false
     virtual bool isDragonHoard() = 0;
 };

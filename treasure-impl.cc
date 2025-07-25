@@ -15,3 +15,5 @@ bool Treasure::isPotion() const { return false; }
 char Treasure::getSymbol() const { return 'G'; }
 
 void Treasure::See() { return; }
+
+bool Treasure::isSeen() { return true; }
