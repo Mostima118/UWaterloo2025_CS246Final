@@ -25,6 +25,10 @@ poisonhealth.cc
 woundatk.cc
 wounddef.cc
 treasure.cc
+normalgold.cc
+smallgold.cc
+merchanthoard.cc
+dragonhoard.cc
 itemfactory.cc
 command.cc
 floor_generator.cc
@@ -55,6 +59,10 @@ poisonhealth-impl.cc
 woundatk-impl.cc
 wounddef-impl.cc
 treasure-impl.cc
+normalgold-impl.cc
+smallgold-impl.cc
+merchanthoard-impl.cc
+dragonhoard-impl.cc
 itemfactory-impl.cc
 command-impl.cc
 floor_generator-impl.cc

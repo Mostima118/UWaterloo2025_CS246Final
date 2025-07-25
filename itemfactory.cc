@@ -12,6 +12,10 @@ import boostdefpotion;
 import poisonhealthpotion;
 import woundatkpotion;
 import wounddefpotion;
+import normalgold;
+import smallgold;
+import merchanthoard;
+import dragonhoard;
 
 export class ItemFactory {
 public:
