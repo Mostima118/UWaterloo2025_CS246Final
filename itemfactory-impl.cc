@@ -34,9 +34,9 @@ std::unique_ptr<Item> ItemFactory::createPreset(char itemType) {
     return nullptr;
 }
 
-std::unique_ptr<Item> ItemFactory::createRandomPotion(unsigned seed) {
-    unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
-    std::srand(actual);
+std::unique_ptr<Item> ItemFactory::createRandomPotion() {
+    //unsigned actual = seed == 0 ? static_cast<unsigned>(time(nullptr)) : seed;
+    //std::srand(actual);
     int r = std::rand() % 6;
     switch (r) {
         case 0: return std::make_unique<RestoreHealthPotion>(-1, -1);
@@ -49,9 +49,9 @@ std::unique_ptr<Item> ItemFactory::createRandomPotion(unsigned seed) {
     return nullptr;
 }
 
-std::unique_ptr<Item> ItemFactory::createRandomTreasure(unsigned seed) {
-    unsigned actual = seed == 0 ? static_cast<unsigned>(std::time(nullptr)) : seed;
-    std::srand(actual);
+std::unique_ptr<Item> ItemFactory::createRandomTreasure() {
+    //unsigned actual = seed == 0 ? static_cast<unsigned>(std::time(nullptr)) : seed;
+    //std::srand(actual);
     int r = std::rand() % 8;
     if (r < 5) {
         return std::make_unique<NormalGold>(-1, -1);

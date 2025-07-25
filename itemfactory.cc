@@ -23,10 +23,10 @@ public:
     static std::unique_ptr<Item> createPreset(char itemType);
 
     // Random generation, potion
-    static std::unique_ptr<Item> createRandomPotion(unsigned seed = 0);
+    static std::unique_ptr<Item> createRandomPotion();
 
     // Random generation, treasure
-    static std::unique_ptr<Item> createRandomTreasure(unsigned seed = 0);
+    static std::unique_ptr<Item> createRandomTreasure();
         
     // createGold creates two piles of normal gold when human is killed
     //  and one pile of merchant hoard when merchant is killed
