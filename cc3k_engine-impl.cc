@@ -166,6 +166,7 @@ void GameEngine::run() {
         replay = !ans.empty()&&(ans[0]=='y'||ans[0]=='Y');
         if (replay) {
             gameOver_ = false;
+            Enemy::setHostile(false);
             if (player_->getType() == "Vampire") {
                 player_->setHP(50);
             }
@@ -198,6 +199,7 @@ void GameEngine::preGenerateFloors() {
     for (int i = 0; i < 5; ++i) {
         std::cout<<"got to loop"<<i<<std::endl;
         floorGen_.generateRandomFloor(seed_ + i, layoutFile_);
+        std::cout<<"called generateRandomFloor"<<std::endl;
         FloorData fd;
         if(floorGen_.hasPresetEntities()) {
             std::cout << "have preset entities"<< std::endl;
@@ -516,7 +518,13 @@ void GameEngine::updateState() {
         int dx = std::abs(ep.x - pos.x);
         int dy = std::abs(ep.y - pos.y);
         if ((dx <= 1 && dy <= 1) && (dx != 0 || dy != 0) && e->isAlive()) {
-            e->attackEffect(player_.get());
+            if (e->getType() != "Merchant") {
+                e->attackEffect(player_.get());
+            }
+            else if (Enemy::isHostile()) {
+                e->attackEffect(player_.get());
+            }
+            
         }
     }
 
@@ -575,9 +583,9 @@ void GameEngine::updateState() {
                 }
                 
             }else if((*it)->getType()=="Merchant") {
-                if (!(*it)->isHostile()) (*it)->setHostile(true);
+                Enemy::setHostile(true);
                    
-                fd.items.push_back(ItemFactory::createGold('G'));  
+                fd.items.push_back(ItemFactory::createGold('M'));  
                 fd.items.back()->setPosition((*it)->getPosition().x, (*it)->getPosition().y); //last item added
                 setTile((*it)->getPosition().x, (*it)->getPosition().y, 'G');  
                 

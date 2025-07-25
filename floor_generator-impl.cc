@@ -52,13 +52,19 @@ Position FloorGenerator::getRandomFreeNeighbor(const std::vector<std::string>& m
     return center;
 }
 void FloorGenerator::loadLayout(const std::string& filename) {
+    std::cout<<"before open file" <<std::endl;
     std::ifstream fin(filename);
+    std::cout<<"before clear map" <<std::endl;
     map_.clear(); std::string line;
+    std::cout<<"before while" <<std::endl;
     while (std::getline(fin, line)) map_.push_back(line);
+    std::cout<<"after while" <<std::endl;
 }
 
 void FloorGenerator::generateRandomFloor(unsigned, std::string fileName) {
+    std::cout<<"before load layout" <<std::endl;
     loadLayout(fileName);
+    std::cout<<"after load layout" <<std::endl;
 }
 
 //new function: finish chamber initializing
