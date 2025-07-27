@@ -17,6 +17,8 @@ import character;
 
 import enemy;
 import item;
+import potion;
+import treasure;
 
 import <iterator>;
 
@@ -149,6 +151,7 @@ void GameEngine::setTile(int x, int y, char ch) {
     floors_[floorNum_ - 1].map[y][x] = ch;
 }
 void GameEngine::run() {
+    Potion::resetSeen();
     gameOver_ = false;
     bool replay;
     do {
@@ -174,6 +177,7 @@ void GameEngine::run() {
         std::cout<<"Play again? (y/n): "; std::string ans; std::getline(std::cin,ans);
         replay = !ans.empty()&&(ans[0]=='y'||ans[0]=='Y');
         if (replay) {
+            Potion::resetSeen();
             gameOver_ = false;
             Enemy::setHostile(false);
             if (player_->getType() == "Vampire") {

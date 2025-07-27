@@ -52,4 +52,6 @@ public:
     char getType() override = 0;
     std::string use() override = 0;
     virtual bool isDragonHoard() = 0;
+
+    static void resetSeen();
 };

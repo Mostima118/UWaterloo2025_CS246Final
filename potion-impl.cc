@@ -23,12 +23,12 @@ bool Potion::isSeen() {
 
 void Potion::See() { 
     switch(potionType) {
-        case PotionType::RH : seen[0] = true;
-        case PotionType::BA : seen[1] = true;
-        case PotionType::BD : seen[2] = true;
-        case PotionType::PH : seen[3] = true;
-        case PotionType::WA : seen[4] = true;
-        case PotionType::WD : seen[5] = true;
+        case PotionType::RH : seen[0] = true; break;
+        case PotionType::BA : seen[1] = true; break;
+        case PotionType::BD : seen[2] = true; break;
+        case PotionType::PH : seen[3] = true; break;
+        case PotionType::WA : seen[4] = true; break;
+        case PotionType::WD : seen[5] = true; break;
     }
 }
 
@@ -47,3 +47,9 @@ Potion::~Potion() = default;
 void Potion::changeStatus() {}
 
 void Potion::changeCollectStatus() {}
+
+void Potion::resetSeen() {
+    for (int i = 0; i < 6; ++i) {
+        seen[i] = false;
+    }
+}
